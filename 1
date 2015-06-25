@@ -1,0 +1,38 @@
+#!/usr/bin/python
+import numpy as np
+import random as rnd
+
+L=10
+M=10
+hexagonal_lattice = np.empty((L,M))
+
+def hex_Saw(lattice,numsteps):
+	(L,M) = lattice.shape
+	print "Lattice at beginning is "+str(lattice)
+	nns = np.array([(-1,-1),(0,-1),(1,-1),(-1,0),(1,0),(0,1)])
+	steps = np.empty([numsteps,2])
+	(row,col) = (np.random.randint(0,L-1),np.random.randint(0,M-1))
+	steps[0,:] = [row,col]
+	for i in xrange(numsteps-1):
+		currentNNs = np.array([[(row+move[0])%L,(col+move[1])%M] for move in nns])
+		#print currentNNs
+		#print currentNNs[:,0]
+		#print currentNNs[:,1]
+		#print lattice[currentNNs[:,0],currentNNs[:,1]]
+		possibleMoves = np.where((lattice[currentNNs[:,0],currentNNs[:,1]]!=1))
+		#print "Possible moves are "+str(possibleMoves)
+		move = rnd.choice([currentNNs[:,0],currentNNs[:,1]][possibleMoves[0],:])
+		print "Chosen move is "+str(move)
+		steps[i+1,:] = move
+		lattice[move] = 1
+	return steps
+
+
+def init_config(lattice_size,numchains):
+	lattice = np.empty((lattice_size[0],lattice_size[1]))
+	
+
+if __name__=='__main__':
+	saw = hex_Saw(hexagonal_lattice,12)
+	print saw
+	print hexagonal_lattice
