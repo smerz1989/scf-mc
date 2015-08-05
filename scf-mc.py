@@ -180,13 +180,9 @@ def fill_nanoparticle(lattice, diameter):
 def init_config(lattice_size, numchains, chainsize):
     chainsize_A = int(chainsize*.75)
     chainsize_B = chainsize - chainsize_A
-<<<<<<< Updated upstream
     numchainsA = 29
     numchainsB = 19
     lattice = np.empty((lattice_size[0], lattice_size[1]))
-=======
-    lattice = np.empty((lattice_size[0], lattice_size[1],lattice_size[2]))
->>>>>>> Stashed changes
     (np_lattice, points) = fill_nanoparticle(lattice, 40)
     (L,M) = (lattice_size[0],lattice_size[1])
     chains_A = np.empty([numchainsA, chainsize_A, 2])
