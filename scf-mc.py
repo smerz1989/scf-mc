@@ -181,11 +181,13 @@ def fill_nanoparticle(lattice, diameter):
 def init_config(lattice_size, numchains, chainsize):
     chainsize_A = int(chainsize*.75)
     chainsize_B = chainsize - chainsize_A
+    numchainsA = 29
+    numchainsB = 19
     lattice = np.empty((lattice_size[0], lattice_size[1]))
     (np_lattice, points) = fill_nanoparticle(lattice, 40)
     (L,M) = (lattice_size[0],lattice_size[1])
-    chains_A = np.empty([numchains/2, chainsize_A, 2])
-    chains_B = np.empty([numchains/2, chainsize_A, 2])
+    chains_A = np.empty([numchainsA, chainsize_A, 2])
+    chains_B = np.empty([numchainsB, chainsize_A, 2])
     #plt.scatter(x_val, y_val)
     #plt.show
     graft_points = np.empty((numchains, 2))
@@ -207,7 +209,7 @@ def init_config(lattice_size, numchains, chainsize):
 
    #graft_points[:,0] = x_val
     #graft_points[:,1] = y_val
-    for i in xrange(numchains/2):
+    for i in xrange(numchainsA):
         chain = -1
         graft_index = np.intersect1d(np.where(graft_points[i][0]==points_sort[:,0])[0],np.where(graft_points[i][1]==points_sort[:,1])[0])
 
@@ -224,7 +226,7 @@ def init_config(lattice_size, numchains, chainsize):
         if ((i + 1) % 10 == 0):
             print "\n\n" + str(i + 1) + "/" + str(numchains) + " chains grown\n\n"
             # print "Chain "+str(i+1)+" out of "+str(numchains)+" grown"
-    for i in xrange(numchains/2):
+    for i in xrange(numchainsB):
         chain = -1
         graft_index = np.intersect1d(np.where(graft_points[i][0]==points_sort[:,0])[0],np.where(graft_points[i][1]==points_sort[:,1])[0])
 
@@ -241,8 +243,8 @@ def init_config(lattice_size, numchains, chainsize):
             # print "Chain "+str(i+1)+" out of "+str(numchains)+" grown"
     chains = np.concatenate((chains_A,chains_B), 0)
     #print chains[40,:,:]
-    print chains_B[10,:,:]
-    print len(chains_B[10,:,:])
+#    print chains_B[10,:,:]
+#    print len(chains_B[10,:,:])
     return (chains, np_lattice, points)
 
 
@@ -326,7 +328,7 @@ def chains_to_xyz(chains,filename):
     xyzfile.close()
 
 def store_energies(energy):
-    energyfile = open('Energies200000c','a')
+    energyfile = open('EnergiesHex42b','a')
     energyfile.write(str(energy)+"\n")
 
 def acceptance_rate(i, count):
@@ -471,8 +473,8 @@ if __name__ == '__main__':
     (chains, lattice, points) = init_config((2000, 500), 48, 16)
     print chains
     count = 0
-    chains_to_xyz(chains, 'Init200000c')
-    for i in range(0,200000):
+    chains_to_xyz(chains, 'InitHex42b')
+    for i in range(0,250000):
         if rnd.uniform(0,1)<.5:
             (lattice, chains,total_energy, acc)=cbmc(lattice,chains)
             print "CBMC"
@@ -480,13 +482,15 @@ if __name__ == '__main__':
             (lattice, chains, total_energy, acc) = swap(lattice, chains)
             print "SWAP"
         store_energies(total_energy)
-        chains_to_xyz(chains, 'Long200000c')
+        chains_to_xyz(chains, 'LongHex42b')
         count += acc
         acceptance_rate(i+1,count)
+        if i%10==0:
+            np.save("Saved_ChainsHex42b", chains)
     #chains[4,4,:] = chains [20,4,:]
     #chains[4,6,:] = chains[4,10,:]
     #print chains[4,10,:]
-    chains_to_xyz(chains, 'Short200000c')
+    chains_to_xyz(chains, 'ShortHex42b')
     check(lattice, chains)
     analysis = sep_analysis(chains)
     analysis = tuple(x/float(48) for x in analysis)
@@ -506,30 +510,30 @@ if __name__ == '__main__':
     plt.scatter(points[:,0],points[:,1])
    # plt.show()
 
-    plt.plotfile('Energies200000c')
+    plt.plotfile('EnergiesHex42b')
     plt.show()
 
     binomial = []
     for k in xrange(0,4):
         n =3
-        binomial += [choose(n,k)*(0.5**k)*(0.5**(n-k))]
+        binomial += [choose(n,k)*(0.6**k)*(0.4**(n-k))]
 
-    spectra = open('Saved_spectra200000','a')
+    spectra = open('Saved_spectraHex40b','a')
     spectra.write(str(analysis)+"\n")
 
     ssr = SSR(analysis, binomial)
-    SSR = open('Saved_SSRh', 'a')
-    SSR.write('+1\t' + str(ssr) + '\t' + '200000\n')
+    SSR = open('Saved_SSRhex40b', 'a')
+    SSR.write('+1\t' + str(ssr) + '\t' + '250000\n')
     SSR.close()
 
-    S = np.loadtxt('Saved_SSRh', skiprows=1)
+    S = np.loadtxt('Saved_SSRhex40b', skiprows=1)
 
     set = []
     for line in S:
         set += [line[1]]
 
-    #set = map(float, set)
-    std = open('Standard_devD','a')
+    set = map(float, set)
+    std = open('Standard_dev40','a')
     std.write(str(np.std(set))+'\n')
 
     print binomial
