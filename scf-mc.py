@@ -63,7 +63,6 @@ def calcenergy(chains, lattice):
                         total_energy += chiAS/2.0
     return total_energy
 
-
 def hex_Saw(lattice, numsteps, grafted_to=None):
     (L, M) = lattice.shape
     # print "Lattice at beginning is "+str(lattice)
@@ -118,7 +117,7 @@ def hex_Saw(lattice, numsteps, grafted_to=None):
 
 
 def fill_nanoparticle(lattice, diameter):
-    (L, M) = lattice.shape
+    (L, M, D) = lattice.shape
     print L
     print M
     x0 = int(L/2)
@@ -181,9 +180,13 @@ def fill_nanoparticle(lattice, diameter):
 def init_config(lattice_size, numchains, chainsize):
     chainsize_A = int(chainsize*.75)
     chainsize_B = chainsize - chainsize_A
+<<<<<<< Updated upstream
     numchainsA = 29
     numchainsB = 19
     lattice = np.empty((lattice_size[0], lattice_size[1]))
+=======
+    lattice = np.empty((lattice_size[0], lattice_size[1],lattice_size[2]))
+>>>>>>> Stashed changes
     (np_lattice, points) = fill_nanoparticle(lattice, 40)
     (L,M) = (lattice_size[0],lattice_size[1])
     chains_A = np.empty([numchainsA, chainsize_A, 2])
@@ -464,13 +467,9 @@ def SSR(analysis, binomial):
         ssr += diff**2
     return ssr
 
-
-
-
-
 if __name__ == '__main__':
     print "Starting initial configuration"
-    (chains, lattice, points) = init_config((2000, 500), 48, 16)
+    (chains, lattice, points) = init_config((2000, 500,1), 48, 16)
     print chains
     count = 0
     chains_to_xyz(chains, 'InitHex42b')
@@ -485,21 +484,21 @@ if __name__ == '__main__':
         chains_to_xyz(chains, 'LongHex42b')
         count += acc
         acceptance_rate(i+1,count)
+<<<<<<< Updated upstream
         if i%10==0:
             np.save("Saved_ChainsHex42b", chains)
     #chains[4,4,:] = chains [20,4,:]
     #chains[4,6,:] = chains[4,10,:]
     #print chains[4,10,:]
     chains_to_xyz(chains, 'ShortHex42b')
+=======
+    chains_to_xyz(chains, 'Short200000c')
+>>>>>>> Stashed changes
     check(lattice, chains)
     analysis = sep_analysis(chains)
     analysis = tuple(x/float(48) for x in analysis)
     print analysis
     for saw in chains:
-    #    if saw[len(saw)-1, 0] == -1 or saw[len(saw)-1, 1] == -1:
-    #       saw[::2, 0] += 0.5
-    #       plt.plot(saw[0:int(len(saw)*.333)+1, 0], saw[0:int(len(saw)*.333)+1, 1])
-    #    else:
             saw = saw[saw[:,0] >= 0]
             #saw[::2, 0] += 0.5
             plt.plot(saw[:, 0], saw[:, 1])
