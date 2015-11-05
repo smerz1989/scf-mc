@@ -110,7 +110,7 @@ def graft_chains(lattice,graft_points,chainlength,numchains):
     chosen_points = rnd.sample(graft_points,numchains) if numchains<=graft_points.shape[0] else -1
     chains = np.empty((numchains,chainlength,3))
     idx = 0
-   # print chosen_points[0]
+  #  print chosen_points[0]
     for graft_point in (chosen_points):
         chain = -1
         point = graft_point
@@ -371,6 +371,7 @@ def acceptance_rate(i, count):
     return rate
 
 def sep_analysis(chains):
+    count = 0
     sort = np.array([0,0,0])
     zero_b = 0
     one_b = 0
@@ -413,15 +414,17 @@ def SSR(analysis, binomial):
 
 
 if __name__=='__main__':
-    (lattice,graft_points,chains) = initialize_lattice((200,200,200),7000,16,20)
+    (lattice,graft_points,chains) = initialize_lattice((200,200,20),779,16,20)
     print len(graft_points)
 
     count = 0
     n = sys.argv[1]
     alph = sys.argv[2]
+    #n = 10
+    #alph = 'b'
     chains_to_xyz(chains, 'Init3D_'+str(n)+alph)
 
-    for i in range(0,10):
+    for i in range(0,int(n)):
         rando = rnd.uniform(0,1)
         if rando>.66:
             (lattice, chains,total_energy, acc)=cbmc(lattice,chains)
@@ -440,7 +443,7 @@ if __name__=='__main__':
     chains_to_xyz(chains, 'Short3D_'+str(n)+alph)
 
     analysis = sep_analysis(chains)
-    analysis = tuple(x/float(2400) for x in analysis)
+    analysis = tuple(x/float(sum(analysis)) for x in analysis)
     print analysis
 
     fig = plt.figure()
@@ -455,26 +458,34 @@ if __name__=='__main__':
 
     binomial = []
     for k in xrange(0,6):
-        n =5
-        binomial += [choose(n,k)*(0.5**k)*(0.5**(n-k))]
+        m =5
+        binomial += [choose(m,k)*(0.5**k)*(0.5**(m-k))]
 
-    spectra = open('Saved_spectra3D_'+str(n),'a')
-    spectra.write(str(analysis)+"\n")
+    saved = np.save('Safe_SSR'+str(n)+alph, analysis)
+
+    #spectra = open(r'C:\Users\Maggie\Documents\GitHub\scf-mc\Saved_spectra3D_'+str(n), 'w')
+    #with spectra:
+    spectra = open('Saved_spectra3D_'+str(n), 'a')
+    spectra.write(str(analysis) +"\n")
+    spectra.flush()
+    spectra.close()
 
     ssr = SSR(analysis, binomial)
     SSR = open('Saved_SSR3D_'+str(n), 'a')
-    SSR.write('+1\t' + str(ssr) + '\t' + '50\n')
+    SSR.write('-1\t' + str(ssr) + '\t' + '10000\n')
+    SSR.flush()
     SSR.close()
 
     S = np.loadtxt('Saved_SSR3D_'+str(n))
 
-    set = []
-    for line in S:
-        set += [line[1]]
+    if alph != 'a':
+        set = []
+        for line in S:
+            set += [line[1]]
 
-    set = map(float, set)
-    std = open('Standard_dev3D_'+str(n),'a')
-    std.write(str(np.std(set))+'\n')
+        set = map(float, set)
+        std = open('Standard_dev3D_'+str(n),'a')
+        std.write(str(np.std(set))+'\n')
 
     print binomial
 
