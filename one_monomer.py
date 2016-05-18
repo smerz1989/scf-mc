@@ -71,7 +71,7 @@ def initialize_lattice(shape,numchains,chainlength,radius):
 if __name__=='__main__':
     (lattice,graft_points) = initialize_lattice((200,200,20),779,16,20)
 
-    next = np.loadtxt('Init3D_50000c', dtype=str, delimiter=" ", skiprows = 1)
+    next = np.loadtxt('Short3D_90000c', dtype=str, delimiter=" ", skiprows = 1)
     print next
     shell = []
 
@@ -84,7 +84,7 @@ if __name__=='__main__':
 
     print shell
 
-    xyzfile = open('corrected_I50000c','a')
+    xyzfile = open('corrected_S90000c','a')
     xyzfile.write(str(1295)+'\n\n')
     for item in shell:
         print item

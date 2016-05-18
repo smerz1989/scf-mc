@@ -82,44 +82,44 @@ def binomial_graph(file):
 
 
 if __name__ == '__main__':
-    energy_10 = []
+    energy_1 = []
     for c in "abc":
         #print [last_line("Energies-10000" + str(c))]
-        energy_10 += [last_line("Energies3D_1050" + str(c))]
-    energy_50 = []
+        energy_1 += [last_line("Energies3D_1050" + str(c))]
+    energy_5 = []
     for d in "abc":
-        energy_50 += [last_line("Energies3D_5050" + str(d))]
-    energy_100 = []
+        energy_5 += [last_line("Energies3D_5050" + str(d))]
+    energy_10 = []
     for e in "abc":
-        energy_100 += [last_line("Energies3D_10050" + str(e))]
-    energy_500 = []
+        energy_10 += [last_line("Energies3D_10050" + str(e))]
+    energy_50 = []
     for f in "abc":
-        energy_500 += [last_line("Energies3D_50000" + str(f))]
-    """energy_250 = []
+        energy_50 += [last_line("Energies3D_50000" + str(f))]
+    energy_90 = []
     for g in "abc":
-        energy_250 += [last_line("Energies250000" + str(g))]
-    energy_300 = []
+        energy_90 += [last_line("Energies3D_90000" + str(g))]
+    energy_70 = []
     for h in "abc":
-        energy_300 += [last_line("Energies300000" + str(h))]"""
+        energy_70 += [last_line("Energies3D_70000" + str(h))]
 
 
+    avg1 = sum(energy_1)/len(energy_1)
+    avg5 = sum(energy_5)/len(energy_5)
     avg10 = sum(energy_10)/len(energy_10)
     avg50 = sum(energy_50)/len(energy_50)
-    avg100 = sum(energy_100)/len(energy_100)
-    avg500 = sum(energy_500)/len(energy_500)
-    """avg250 = sum(energy_250)/len(energy_250)
-    avg300 = sum(energy_300)/len(energy_300)"""
+    avg90 = sum(energy_90)/len(energy_90)
+    avg70 = sum(energy_70)/len(energy_70)
 
+    std_1 = np.std(energy_1)
+    std_5 = np.std(energy_5)
     std_10 = np.std(energy_10)
     std_50 = np.std(energy_50)
-    std_100 = np.std(energy_100)
-    std_500 = np.std(energy_500)
-    """std_250 = np.std(energy_250)
-    std_300 = np.std(energy_300)"""
+    std_90 = np.std(energy_90)
+    std_70 = np.std(energy_70)
 
-    y_vals = [avg10, avg50, avg100, avg500] # avg100, avg200, avg250, avg300]
-    x_vals = [1050, 5050, 10050, 50000]# 100000, 200000, 250000, 300000]
-    yerr = [std_10, std_50, std_100, std_500]# std_100, std_200, std_250, std_300]
+    y_vals = [avg1, avg5, avg10, avg50,avg70, avg90] # avg100, avg200, avg250, avg300]
+    x_vals = [1050, 5050, 10050, 50000, 70000, 90000]# 100000, 200000, 250000, 300000]
+    yerr = [std_1, std_5, std_10, std_50,std_70, std_90]# std_100, std_200, std_250, std_300]
     #plt.errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
     #plt.xlim(5000, 105000)
     #axarr[0].title('Plot of Energies for each Number of Runs')
@@ -132,45 +132,47 @@ if __name__ == '__main__':
     """ # plt.figure(2)
     SSR10 = get_avg("Saved_SSRe")
     SSR50 = get_avg("Saved_SSRf")"""
-    SSR100 = get_avg("Saved_SSR3D_10050")
-    SSR500 = get_avg("Saved_SSR3D_50000")
-    """SSR250 = get_avg("Saved_SSRi")
-    SSR300 = get_avg("Saved_SSRj")"""
+    SSR10 = get_avg("Saved_SSR3D_10050")
+    SSR50 = get_avg("Saved_SSR3D_50000")
+    SSR90 = get_avg("Saved_SSR3D_90000")
+    SSR70 = get_avg("Saved_SSR3D_70000")
 
     StandDevA = np.loadtxt("Standard_dev3D_10050")
-    Stand100 = StandDevA[-1]
+    Stand10 = StandDevA[-1]
     StandDevB = np.loadtxt("Standard_dev3D_50000")
-    Stand500 = StandDevB[-1]
-    """StandDevC = np.loadtxt("Standard_devC", skiprows=2)
-    Stand100 = StandDevC[-1]
-    StandDevD = np.loadtxt("Standard_devD", skiprows=1)
-    Stand200 = StandDevD[-1]
-    StandDevE = np.loadtxt("Standard_devE", skiprows=1)
+    Stand50 = StandDevB[-1]
+    StandDevC = np.loadtxt("Standard_dev3D_90000_b")
+    Stand90 = StandDevC[-1]
+    StandDevD = np.loadtxt("Standard_dev3D_70000_b")
+    Stand70 = StandDevD
+    """StandDevE = np.loadtxt("Standard_devE", skiprows=1)
     Stand250 = StandDevE[-1]
     StandDevF = np.loadtxt("Standard_devF", skiprows=1)
     Stand300 = StandDevF[-1]"""
 
-    x = [10050, 50000]
-    y = [SSR100, SSR500]
-    err = [Stand100, Stand500]
-    #plt.errorbar(x_vals, y, yerr=err, marker = 'o')
-    #plt.xlim(5000, 105000)
-    #axarr[1].title('Plot of SSR for each Number of Runs')"""
+    x = [10050, 50000,70000, 90000]
+    y = [SSR10, SSR50,SSR70, SSR90]
+    err = [Stand10, Stand50, Stand70, Stand90]
+    #plt.errorbar(x, y, yerr=err, marker = 'o')
+    #plt.xlim(0, 91000)
+    #plt.title('Plot of SSR for each Number of Runs')
+    #plt.xlabel('Number of Moves')
+
 
 
     f, axarr = plt.subplots(2, sharex=True)
     axarr[0].errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
     axarr[1].errorbar(x, y, yerr=err, marker = 'o')
-    axarr[0].set_title('Varying trial moves for Bad Solvent')
-    #axarr[1].set_title('Plot of SSR for each Number of Runs')
-    axarr[1].set_xlim(0, 51000)
+    axarr[0].set_title('Varying trial moves for Good Solvent')
+    axarr[1].set_title('Plot of SSR for each Number of Runs')
+    axarr[1].set_xlim(0, 91000)
     axarr[0].set_ylabel("Energy")
     axarr[1].set_ylabel("SSR")
     axarr[0].set_xlabel("Number of moves")
     axarr[1].set_xlabel("Number of moves")
     plt.show()
 
-    binomial_graph("Saved_spectra3D_10100")
+    binomial_graph("Saved_spectra3D_90000")
 
 
 
