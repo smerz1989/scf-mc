@@ -51,11 +51,24 @@ def calcenergy(chains, lattice):
     nns_even = np.array([(0, -1, 0), (-1, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (-1, 1, 0),(0,0,-1),(0,0,1)])
     total_energy = 0
     chiAS = -1
+    chiAB = 1
+    chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,0,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),0]])
+    #0 = solvent, 1 = substrate, 2 = polymer A, 3 = polymer B
     for chain in chains:
         #print chain
         length = chain.shape[0]
         chainlength = chain[chain[:,0]>=0].shape[0]
-        if chainlength < length:
+        for monomer in chain[0:chainlength,:]:
+            if monomer[0]%2 == 0:
+                    nns = nns_even
+            else:
+                    nns = nns_odd
+            neighbors = [[(neighbor[0]+monomer[0])%(L-1) ,(neighbor[1]+monomer[1])%(M-1) , (neighbor[2]+monomer[2])%(P-1) ] for neighbor in nns]
+            for neighbor in neighbors:
+                total_energy += chi[lattice[(monomer[0]),(monomer[1]),(monomer[2])] ,lattice[(neighbor[0]),(neighbor[1]),(neighbor[2])]]
+                #total_energy += chiAS/2.0
+
+    """ if chainlength < length:
             for monomer in chain[0:chainlength,:]:
                # print monomer
                 if monomer[0]%2 == 0:
@@ -77,7 +90,7 @@ def calcenergy(chains, lattice):
                    # print neighbor[0]
                     #print str(L) + "  " + str(M) +"  "+str(P)
                     if lattice[(neighbor[0]),(neighbor[1]), (neighbor[2])] == 0:
-                        total_energy += chiAS/2.0
+                        total_energy += chiAS/2.0"""
     return total_energy
 
 

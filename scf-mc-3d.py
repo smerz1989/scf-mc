@@ -10,14 +10,14 @@ import Analysis as an
 
 
 if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),779,16,20)
+    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),779,16,[2,3],20)
     print len(graft_points)
 
     count = 0
     #n = sys.argv[1]
     #alph = sys.argv[2]
-    n = 7
-    alph = 'a'
+    n = 8
+    alph = 'b'
     an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph)
 
     for i in range(0,int(n)):

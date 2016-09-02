@@ -17,6 +17,9 @@ def cbmc(lattice, chains):  #configurational bias monte carlo
     length = chain[chain[:,0]>=0].shape[0]
    # print chain
     monomer = rnd.choice(chain[chain[:,0]>=0])
+    #Look up moiety of the zeroith monomer
+    moiety = lattice[monomer[0], monomer[1], monomer[2]]
+
     #while monomer[0] < 1 and monomer[1] < 1:
     #    monomer = rnd.choice(chain)
     #    print "new monomer"
@@ -34,7 +37,7 @@ def cbmc(lattice, chains):  #configurational bias monte carlo
         print 'move index back'
     numchains = length - index[0]
     lattice[chain[index[0]:length,0].astype(int),chain[index[0]:length,1].astype(int), chain[index[0]:length,2].astype(int)] = 0
-    deleted = init.hex_Saw(lattice,numchains,monomer)
+    deleted = init.hex_Saw(lattice,numchains,moiety,monomer)
     if np.any(deleted == -1):
         print "no saw found"
         return (lattice_old, chains_old, energy_old,count)
@@ -88,7 +91,9 @@ def take_empty(lattice, chains, graft_points):
 #    while lattice[graft_point[0]][graft_point[1]][graft_point[2]]== 1:
 #        graft_point = rnd.sample(graft_points,1)
     print graft_point[0]
-    deleted = init.hex_Saw(lattice,chainlength,graft_point[0])
+    monomer = chain[0]
+    moiety = lattice[monomer[0], monomer[1], monomer[2]]
+    deleted = init.hex_Saw(lattice,chainlength,moiety, graft_point[0])
     if np.any(deleted == -1):
         print "no saw found"
         return (lattice_old, chains_old, energy_old,count)
@@ -128,6 +133,14 @@ def swap(lattice, chains):
     length1 = chain1[chain1[:,0]>=0].shape[0]
     chain2 = rnd.choice(chains)
     length2 = chain2[chain2[:,0]>=0].shape[0]
+
+    monomer1 = chain1[0]
+    moiety1 = lattice[monomer1[0], monomer1[1], monomer1[2]]
+    monomer2 = chain2[0]
+    moiety2 = lattice[monomer2[0], monomer2[1], monomer2[2]]
+
+
+
     while length1 == length2:
         chain2 = rnd.choice(chains)
         length2 = chain2[chain2[:,0]>=0].shape[0]
