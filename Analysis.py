@@ -100,7 +100,7 @@ def chains_to_xyz(chains,filename):
     numchains = chains.shape[0]
 
     xyzfile = open(filename ,'a')
-    numatoms = chainlength_A*numchains/2 + chainlength_B*numchains/2;
+    numatoms = chainlength_A*int(numchains/2) + chainlength_B*(numchains-int(numchains/2));
    # numatoms = numchains*30
     xyzfile.write(str(numatoms)+'\n\n')
     for chain in chains:

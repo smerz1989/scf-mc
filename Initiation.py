@@ -3,7 +3,7 @@ __author__ = 'Maggie'
 import numpy as np
 import random as rnd
 
-#DOn't choose any negative moieties
+#Don't choose any negative moieties
 
 def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
     (L, M, D) = lattice.shape

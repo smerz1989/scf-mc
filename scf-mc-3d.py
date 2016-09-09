@@ -2,6 +2,7 @@
 import numpy as np
 import random as rnd
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import sys
 import Initiation as init
 import TrialMoves as TM
@@ -14,10 +15,10 @@ if __name__=='__main__':
     print len(graft_points)
 
     count = 0
-    #n = sys.argv[1]
-    #alph = sys.argv[2]
-    n = 8
-    alph = 'b'
+    n = sys.argv[1]
+    alph = sys.argv[2]
+    #n = 43
+    #alph = 'a'
     an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph)
 
     for i in range(0,int(n)):
@@ -35,7 +36,7 @@ if __name__=='__main__':
 
         # Should add matrices for chemical moeity and identity in here
 
-        if i % 100 == 0: # record every hundredth configuration
+        if i % 10 == 0: # record every hundredth configuration
             an.chains_to_xyz(chains, 'Long3D_'+str(n)+alph)
         count += acc
         an.acceptance_rate(i+1,count)
