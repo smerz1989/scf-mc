@@ -16,10 +16,10 @@ if __name__=='__main__':
     print len(graft_points)
 
     count = 0
-    n = sys.argv[1]
-    alph = sys.argv[2]
-    #n = 590
-    #alph = 'e'
+    #n = sys.argv[1]
+    #alph = sys.argv[2]
+    n = 5
+    alph = 'f'
     an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph, lattice)
 
     for i in range(0,int(n)):
@@ -55,9 +55,9 @@ if __name__=='__main__':
         ax.plot(chain[:,0],chain[:,1],chain[:,2])
     #plt.show()
 
-    energy = plt.plotfile('Energies3D_'+str(n)+alph)
-    energy.savefig("energy.pdf")
-    plt.close(energy)
+    plt.plotfile('Energies3D_'+str(n)+alph)
+    plt.savefig("energy" +str(n)+alph+".pdf")
+    plt.close()
 
     binomial = []
     for k in xrange(0,6):
@@ -95,4 +95,4 @@ if __name__=='__main__':
     t = np.array([0,1,2,3,4,5])
     plt.plot(t.T,binomial,'r')
     plt.plot(t.T,analysis,'b')
-    plt.savefig("binomial.pdf")
+    plt.savefig("binomial"+str(n)+alph+".pdf")
