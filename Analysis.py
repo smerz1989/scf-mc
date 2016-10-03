@@ -50,9 +50,11 @@ def calcenergy(chains, lattice):
     nns_odd = np.array([(-1, -1, 0), (0, -1, 0), (1, -1, 0), (-1, 0, 0), (1, 0, 0), (0, 1, 0), (0,0,-1),(0,0,1)])
     nns_even = np.array([(0, -1, 0), (-1, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (-1, 1, 0),(0,0,-1),(0,0,1)])
     total_energy = 0
-    chiAS = -1
+    chiAS = 0
     chiAB = 1
-    chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,0,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),0]])
+    chiAA = -1
+    chiBB = -1
+    chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,chiAA,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),chiBB]])
     #0 = solvent, 1 = substrate, 2 = polymer A, 3 = polymer B
     for chain in chains:
         #print chain
@@ -94,7 +96,7 @@ def calcenergy(chains, lattice):
     return total_energy
 
 
-def chains_to_xyz(chains,filename):
+def chains_to_xyz(chains,filename,lattice):
     chainlength_A = chains[0].shape[0]
     chainlength_B = int(chainlength_A*.33)+1
     numchains = chains.shape[0]
@@ -111,9 +113,11 @@ def chains_to_xyz(chains,filename):
             #if distance > 13:
             #    print 'distance between tether is ' + str(distance)
             if chain.shape[0] == chainlength_A:
-                xyzfile.write('C '+str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
+                moietyA = lattice[monomer[0], monomer[1], monomer[2]]
+                xyzfile.write(str(moietyA)+ " " +str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
             elif chain.shape[0] == chainlength_B:
-                xyzfile.write('N ' + str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
+                moietyB = lattice[monomer[0], monomer[1], monomer[2]]
+                xyzfile.write(str(moietyB)+" " + str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
             else:
                 xyzfile.write('O '+str(monomer[0])+' '+str(monomer[1])+' '+ '0'+'\n')
     xyzfile.close()

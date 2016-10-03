@@ -91,6 +91,8 @@ def take_empty(lattice, chains, graft_points):
     energy_old = an.calcenergy(chains, lattice)
     num = rnd.randint(0,numchains-1)
     chain = chains[num,:,:]
+    monomer = chain[0]
+    moiety = lattice[monomer[0], monomer[1], monomer[2]]
     #print chain
     chainlength = chain[chain[:,0]>=0].shape[0]
     #index = chain[0][:]
@@ -105,8 +107,7 @@ def take_empty(lattice, chains, graft_points):
 #    while lattice[graft_point[0]][graft_point[1]][graft_point[2]]== 1:
 #        graft_point = rnd.sample(graft_points,1)
     print graft_point[0]
-    monomer = chain[0]
-    moiety = lattice[monomer[0], monomer[1], monomer[2]]
+
     deleted = init.hex_Saw(lattice,chainlength,moiety, graft_point[0])
     if np.any(deleted == -1):
         print "no saw found"

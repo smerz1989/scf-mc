@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     f, axarr = plt.subplots(2, sharex=True)
     axarr[0].errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
-    axarr[1].errorbar(x, y, yerr=err, marker = 'o')
+#    axarr[1].errorbar(x, y, yerr=err, marker = 'o')
     axarr[0].set_title('Varying trial moves for Good Solvent')
     axarr[1].set_title('Plot of SSR for each Number of Runs')
     axarr[1].set_xlim(0, 91000)

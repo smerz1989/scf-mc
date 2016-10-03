@@ -11,15 +11,16 @@ import Analysis as an
 
 
 if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),779,16,[2,3],20)
+    (lattice,graft_points,chains) = init.initialize_lattice((200,200,6),200,16,[2,3],20)
+    #previously 779
     print len(graft_points)
 
     count = 0
     n = sys.argv[1]
     alph = sys.argv[2]
-    #n = 43
-    #alph = 'a'
-    an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph)
+    #n = 590
+    #alph = 'e'
+    an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph, lattice)
 
     for i in range(0,int(n)):
         rando = rnd.uniform(0,1)
@@ -36,12 +37,12 @@ if __name__=='__main__':
 
         # Should add matrices for chemical moeity and identity in here
 
-        if i % 10 == 0: # record every hundredth configuration
-            an.chains_to_xyz(chains, 'Long3D_'+str(n)+alph)
+        if i % 100 == 0: # record every hundredth configuration
+            an.chains_to_xyz(chains, 'Long3D_'+str(n)+alph, lattice)
         count += acc
         an.acceptance_rate(i+1,count)
 
-    an.chains_to_xyz(chains, 'Short3D_'+str(n)+alph)
+    an.chains_to_xyz(chains, 'Short3D_'+str(n)+alph, lattice)
 
     analysis = an.sep_analysis(chains)
     analysis = tuple(x/float(sum(analysis)) for x in analysis)
@@ -52,10 +53,11 @@ if __name__=='__main__':
     for chain in chains:
         chain = chain[chain[:,0] >= 0]
         ax.plot(chain[:,0],chain[:,1],chain[:,2])
-    plt.show()
+    #plt.show()
 
-    plt.plotfile('Energies3D_'+str(n)+alph)
-    plt.show()
+    energy = plt.plotfile('Energies3D_'+str(n)+alph)
+    energy.savefig("energy.pdf")
+    plt.close(energy)
 
     binomial = []
     for k in xrange(0,6):
@@ -93,4 +95,4 @@ if __name__=='__main__':
     t = np.array([0,1,2,3,4,5])
     plt.plot(t.T,binomial,'r')
     plt.plot(t.T,analysis,'b')
-    plt.show()
+    plt.savefig("binomial.pdf")
