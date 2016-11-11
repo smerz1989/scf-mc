@@ -123,7 +123,7 @@ def chains_to_xyz(chains,filename,lattice):
     xyzfile.close()
 
 def store_energies(energy, n, alph):
-    energyfile = open('Energies3D_'+str(n)+alph,'a')
+    energyfile = open('EnergiesDual_'+str(n)+alph,'a')
     energyfile.write(str(energy)+"\n")
 
 def acceptance_rate(i, count):

@@ -50,7 +50,7 @@ def delta_G_T(file,T,L):
 
 if __name__ == '__main__':
 
-    file = 'Energies3D_90000e'
+    file = 'Energies3D_5000a'
     Energy = np.loadtxt(file)
     Tot = len(Energy)
     cut = 75

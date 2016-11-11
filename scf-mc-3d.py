@@ -16,11 +16,11 @@ if __name__=='__main__':
     print len(graft_points)
 
     count = 0
-    #n = sys.argv[1]
-    #alph = sys.argv[2]
-    n = 5
-    alph = 'f'
-    an.chains_to_xyz(chains, 'Init3D_'+str(n)+alph, lattice)
+    n = sys.argv[1]
+    alph = sys.argv[2]
+    #n = 5
+    #alph = 'f'
+    an.chains_to_xyz(chains, 'InitDual_'+str(n)+alph, lattice)
 
     for i in range(0,int(n)):
         rando = rnd.uniform(0,1)
@@ -38,11 +38,11 @@ if __name__=='__main__':
         # Should add matrices for chemical moeity and identity in here
 
         if i % 100 == 0: # record every hundredth configuration
-            an.chains_to_xyz(chains, 'Long3D_'+str(n)+alph, lattice)
+            an.chains_to_xyz(chains, 'LongDual_'+str(n)+alph, lattice)
         count += acc
         an.acceptance_rate(i+1,count)
 
-    an.chains_to_xyz(chains, 'Short3D_'+str(n)+alph, lattice)
+    an.chains_to_xyz(chains, 'ShortDual_'+str(n)+alph, lattice)
 
     analysis = an.sep_analysis(chains)
     analysis = tuple(x/float(sum(analysis)) for x in analysis)
@@ -55,8 +55,8 @@ if __name__=='__main__':
         ax.plot(chain[:,0],chain[:,1],chain[:,2])
     #plt.show()
 
-    plt.plotfile('Energies3D_'+str(n)+alph)
-    plt.savefig("energy" +str(n)+alph+".pdf")
+    plt.plotfile('EnergiesDual_'+str(n)+alph)
+    plt.savefig("energyDual_" +str(n)+alph+".pdf")
     plt.close()
 
     binomial = []
@@ -64,22 +64,22 @@ if __name__=='__main__':
         m =5
         binomial += [an.choose(m,k)*(0.5**k)*(0.5**(m-k))]
 
-    saved = np.save('Safe_SSR'+str(n)+alph, analysis)
+    saved = np.save('Safe_SSRDual'+str(n)+alph, analysis)
 
     #spectra = open(r'C:\Users\Maggie\Documents\GitHub\scf-mc\Saved_spectra3D_'+str(n), 'w')
     #with spectra:
-    spectra = open('Saved_spectra3D_'+str(n), 'a')
+    spectra = open('Saved_spectraDual_'+str(n), 'a')
     spectra.write(str(analysis) +"\n")
     spectra.flush()
     spectra.close()
 
     ssr = an.SSR(analysis, binomial)
-    SSR = open('Saved_SSR3D_'+str(n), 'a')
+    SSR = open('Saved_SSRDual_'+str(n), 'a')
     SSR.write('-1\t' + str(ssr) + '\t' + '10000\n')
     SSR.flush()
     SSR.close()
 
-    S = np.loadtxt('Saved_SSR3D_'+str(n))
+    S = np.loadtxt('Saved_SSRDual_'+str(n))
 
     if alph != 'a':
         set = []
@@ -87,7 +87,7 @@ if __name__=='__main__':
             set += [line[1]]
 
         set = map(float, set)
-        std = open('Standard_dev3D_'+str(n),'a')
+        std = open('Standard_devDual_'+str(n),'a')
         std.write(str(np.std(set))+'\n')
 
     print binomial
@@ -95,4 +95,4 @@ if __name__=='__main__':
     t = np.array([0,1,2,3,4,5])
     plt.plot(t.T,binomial,'r')
     plt.plot(t.T,analysis,'b')
-    plt.savefig("binomial"+str(n)+alph+".pdf")
+    plt.savefig("binomialDual"+str(n)+alph+".pdf")
