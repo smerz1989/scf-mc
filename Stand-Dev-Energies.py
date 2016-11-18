@@ -50,15 +50,15 @@ def delta_G_T(file,T,L):
 
 if __name__ == '__main__':
 
-    file = 'Energies3D_5000a'
+    file = 'chi_1_5000steps\Energies3D_5000a'
     Energy = np.loadtxt(file)
     Tot = len(Energy)
-    cut = 75
+    cut = 0
     L = 1000
     num = Tot/L
     Y = []
     X = []
-    for T in range (L, Tot, L):
+    for T in range (L, Tot+1, L):
         y = delta_G_T(file, T, L)
         Y += [y]
         X += [float(1)/np.sqrt(T)]
