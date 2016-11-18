@@ -11,7 +11,7 @@ import Analysis as an
 
 
 if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,6),200,16,[2,3],20)
+    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),200,16,[2,3],20)
     #previously 779
     print len(graft_points)
 
