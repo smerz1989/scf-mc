@@ -50,10 +50,10 @@ def delta_G_T(file,T,L):
 
 if __name__ == '__main__':
 
-    file = 'chi_1_5000steps\Energies3D_5000a'
+    file = 'chi_1_250000steps\EnergiesDual_250000a'
     Energy = np.loadtxt(file)
     Tot = len(Energy)
-    cut = 0
+    cut = 40
     L = 1000
     num = Tot/L
     Y = []

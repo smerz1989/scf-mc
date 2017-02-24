@@ -11,7 +11,7 @@ import Analysis as an
 
 
 if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),200,16,[2,3],20)
+    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
     #previously 779
     print len(graft_points)
 
@@ -36,10 +36,12 @@ if __name__=='__main__':
         an.store_energies(total_energy, n, alph)
 
         # Should add matrices for chemical moeity and identity in here
-
+        if i % 50000 == 0: #record the chain matrix every 50,000 so the SSR can be taken later.
+            np.save('chainsSSRDual'+str(i)+alph, chains)
         if i % 100 == 0: # record every hundredth configuration
             an.chains_to_xyz(chains, 'LongDual_'+str(n)+alph, lattice)
         count += acc
+
         an.acceptance_rate(i+1,count)
 
     an.chains_to_xyz(chains, 'ShortDual_'+str(n)+alph, lattice)
@@ -47,6 +49,7 @@ if __name__=='__main__':
     analysis = an.sep_analysis(chains)
     analysis = tuple(x/float(sum(analysis)) for x in analysis)
     print analysis
+    chainsSSR = np.load('chainsSSRDual'+str(n)+alph)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')

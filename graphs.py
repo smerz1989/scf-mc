@@ -82,44 +82,50 @@ def binomial_graph(file):
 
 
 if __name__ == '__main__':
-    energy_1 = []
+    energy_5 = []
     for c in "abc":
         #print [last_line("Energies-10000" + str(c))]
-        energy_1 += [last_line("Energies3D_1050" + str(c))]
-    energy_5 = []
-    for d in "abc":
-        energy_5 += [last_line("Energies3D_5050" + str(d))]
+        energy_5 += [last_line('chi_1_5000steps\Energies3D_5000' + str(c))]
     energy_10 = []
-    for e in "abc":
-        energy_10 += [last_line("Energies3D_10050" + str(e))]
+    for d in "bc":
+        energy_10 += [last_line('chi_1_10000steps\EnergiesDual_10000' + str(d))]
     energy_50 = []
+    for e in "abc":
+        energy_50 += [last_line('chi_1_50000steps\EnergiesDual_50000' + str(e))]
+    energy_100 = []
     for f in "abc":
-        energy_50 += [last_line("Energies3D_50000" + str(f))]
-    energy_90 = []
+        energy_100 += [last_line('chi_1_100000steps\EnergiesDual_100000' + str(f))]
+    energy_150 = []
     for g in "abc":
-        energy_90 += [last_line("Energies3D_90000" + str(g))]
-    energy_70 = []
+        energy_150 += [last_line('chi_1_150000steps\EnergiesDual_150000' + str(g))]
+    energy_200 = []
     for h in "abc":
-        energy_70 += [last_line("Energies3D_70000" + str(h))]
+        energy_200 += [last_line('chi_1_200000steps\EnergiesDual_200000' + str(h))]
+    energy_250 = []
+    for i in "abc":
+        energy_250 += [last_line('chi_1_250000steps\EnergiesDual_250000' + str(i))]
 
 
-    avg1 = sum(energy_1)/len(energy_1)
+
     avg5 = sum(energy_5)/len(energy_5)
     avg10 = sum(energy_10)/len(energy_10)
     avg50 = sum(energy_50)/len(energy_50)
-    avg90 = sum(energy_90)/len(energy_90)
-    avg70 = sum(energy_70)/len(energy_70)
+    avg100 = sum(energy_100)/len(energy_100)
+    avg150 = sum(energy_150)/len(energy_150)
+    avg200 = sum(energy_200)/len(energy_200)
+    avg250 = sum(energy_250)/len(energy_250)
 
-    std_1 = np.std(energy_1)
     std_5 = np.std(energy_5)
     std_10 = np.std(energy_10)
     std_50 = np.std(energy_50)
-    std_90 = np.std(energy_90)
-    std_70 = np.std(energy_70)
+    std_100 = np.std(energy_100)
+    std_150 = np.std(energy_150)
+    std_200 = np.std(energy_200)
+    std_250 = np.std(energy_250)
 
-    y_vals = [avg1, avg5, avg10, avg50,avg70, avg90] # avg100, avg200, avg250, avg300]
-    x_vals = [1050, 5050, 10050, 50000, 70000, 90000]# 100000, 200000, 250000, 300000]
-    yerr = [std_1, std_5, std_10, std_50,std_70, std_90]# std_100, std_200, std_250, std_300]
+    y_vals = [avg5, avg10, avg50,avg100, avg150,avg200, avg250 ] # avg100, avg200, avg250, avg300]
+    x_vals = [5000, 10000, 50000, 100000, 150000, 200000, 250000]# 100000, 200000, 250000, 300000]
+    yerr = [std_5, std_10, std_50,std_100, std_150, std_200, std_250]# std_100, std_200, std_250, std_300]
     #plt.errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
     #plt.xlim(5000, 105000)
     #axarr[0].title('Plot of Energies for each Number of Runs')
@@ -132,27 +138,29 @@ if __name__ == '__main__':
     """ # plt.figure(2)
     SSR10 = get_avg("Saved_SSRe")
     SSR50 = get_avg("Saved_SSRf")"""
-    SSR10 = get_avg("Saved_SSR3D_10050")
-    SSR50 = get_avg("Saved_SSR3D_50000")
-    SSR90 = get_avg("Saved_SSR3D_90000")
-    SSR70 = get_avg("Saved_SSR3D_70000")
+    #SSR5 = get_avg("Saved_SSR3D_10050")
+    SSR50 = get_avg("chi_1_50000steps\Saved_SSRDual_50000")
+    SSR100 = get_avg("chi_1_100000steps\Saved_SSRDual_100000")
+    SSR150 = get_avg("chi_1_150000steps\Saved_SSRDual_150000")
+    SSR200 = get_avg("chi_1_200000steps\Saved_SSRDual_200000")
+    SSR250 = get_avg("chi_1_250000steps\Saved_SSRDual_250000")
 
-    StandDevA = np.loadtxt("Standard_dev3D_10050")
-    Stand10 = StandDevA[-1]
-    StandDevB = np.loadtxt("Standard_dev3D_50000")
-    Stand50 = StandDevB[-1]
-    StandDevC = np.loadtxt("Standard_dev3D_90000_b")
-    Stand90 = StandDevC[-1]
-    StandDevD = np.loadtxt("Standard_dev3D_70000_b")
-    Stand70 = StandDevD
-    """StandDevE = np.loadtxt("Standard_devE", skiprows=1)
-    Stand250 = StandDevE[-1]
-    StandDevF = np.loadtxt("Standard_devF", skiprows=1)
-    Stand300 = StandDevF[-1]"""
+    StandDevA = np.loadtxt("chi_1_50000steps\Standard_devDual_50000")
+    Stand50 = StandDevA[-1]
+    StandDevB = np.loadtxt("chi_1_100000steps\Standard_devDual_100000")
+    Stand100 = StandDevB[-1]
+    StandDevC = np.loadtxt("chi_1_150000steps\Standard_devDual_150000")
+    Stand150 = StandDevC
+    StandDevD = np.loadtxt("chi_1_200000steps\Standard_devDual_200000")
+    Stand200 = StandDevD[-1]
+    StandDevE = np.loadtxt("chi_1_250000steps\Standard_devDual_250000")
+    Stand250 = StandDevE
+    #StandDevF = np.loadtxt("Standard_devF", skiprows=1)
+    #Stand300 = StandDevF[-1]
 
-    x = [10050, 50000,70000, 90000]
-    y = [SSR10, SSR50,SSR70, SSR90]
-    err = [Stand10, Stand50, Stand70, Stand90]
+    x = [50000, 100000, 150000, 200000, 250000]
+    y = [SSR50,SSR100, SSR150, SSR200, SSR250]
+    err = [Stand50, Stand100, Stand150, Stand200, Stand250]
     #plt.errorbar(x, y, yerr=err, marker = 'o')
     #plt.xlim(0, 91000)
     #plt.title('Plot of SSR for each Number of Runs')
@@ -162,17 +170,17 @@ if __name__ == '__main__':
 
     f, axarr = plt.subplots(2, sharex=True)
     axarr[0].errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
-#    axarr[1].errorbar(x, y, yerr=err, marker = 'o')
+    axarr[1].errorbar(x, y, yerr=err, marker = 'o')
     axarr[0].set_title('Varying trial moves for Good Solvent')
     axarr[1].set_title('Plot of SSR for each Number of Runs')
-    axarr[1].set_xlim(0, 91000)
+    axarr[1].set_xlim(0, 260000)
     axarr[0].set_ylabel("Energy")
     axarr[1].set_ylabel("SSR")
     axarr[0].set_xlabel("Number of moves")
     axarr[1].set_xlabel("Number of moves")
     plt.show()
 
-    binomial_graph("Saved_spectra3D_90000")
+    binomial_graph("chi_1_200000steps\Saved_spectraDual_200000")
 
 
 

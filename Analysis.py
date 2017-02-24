@@ -52,8 +52,8 @@ def calcenergy(chains, lattice):
     total_energy = 0
     chiAS = 0
     chiAB = 1
-    chiAA = -1
-    chiBB = -1
+    chiAA = 0
+    chiBB = 0
     chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,chiAA,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),chiBB]])
     #0 = solvent, 1 = substrate, 2 = polymer A, 3 = polymer B
     for chain in chains:
