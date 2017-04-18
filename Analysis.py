@@ -51,7 +51,7 @@ def calcenergy(chains, lattice):
     nns_even = np.array([(0, -1, 0), (-1, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (-1, 1, 0),(0,0,-1),(0,0,1)])
     total_energy = 0
     chiAS = 0
-    chiAB = 1
+    chiAB = 0.25
     chiAA = 0
     chiBB = 0
     chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,chiAA,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),chiBB]])
