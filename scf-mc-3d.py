@@ -37,7 +37,7 @@ if __name__=='__main__':
 
         # Should add matrices for chemical moeity and identity in here
         if (i) % 50000 == 0: #record the chain matrix every 50,000 so the SSR can be taken later.
-            np.save('chainsSSRDual'+str(i)+alph, chains)
+            np.save('chainsSSRDual'+str(i+1)+alph, chains)
         if i % 100 == 0: # record every hundredth configuration
             an.chains_to_xyz(chains, 'LongDual_'+str(n)+alph, lattice)
         count += acc
