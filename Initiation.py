@@ -16,7 +16,7 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
     tries = 0
     while (not complete) and (tries < maxtries):
         steps = np.zeros([numsteps, 3], dtype=int)
-        if (grafted_to == None):
+        if grafted_to is None:
             (row, col, layer) = (np.random.randint(0, L - 1), np.random.randint(0, M - 1),np.random.randint(0, D - 1))
         else:
             (row, col, layer) = grafted_to
