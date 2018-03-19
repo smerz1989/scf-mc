@@ -8,22 +8,27 @@ import Initiation as init
 import TrialMoves as TM
 import Analysis as an
 
+# NOTES
+# lattice length = 0.154 nm
+# moieties: solvent = 0, substrate = 1, polymer A = 2, polymer B = 3
+# x and y components of shape has to be at least 2*radius + 2*chainlength
 
-
-if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
-    #previously 779
+if __name__== '__main__':
+    # Preallocates the lattice and chains, and defines the graft points
+    (lattice, graft_points, chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
+    # Prints the number of graft points
     print len(graft_points)
 
     count = 0
-    n = sys.argv[1]
+    n = int(sys.argv[1])
     alph = sys.argv[2]
-    #n = 5
-    #alph = 'f'
+    np.save('initchains',chains)
     an.chains_to_xyz(chains, 'InitDual_'+str(n)+alph, lattice)
+    ## an.chains_to_xyz(chains, 'InitDual_', lattice)
 
-    for i in range(0,int(n)):
-        rando = rnd.uniform(0,1)
+    for i in range(0,n):
+        ##rando = rnd.uniform(0,1)
+        rando = 0.22
         if rando>.66:
             (lattice, chains,total_energy, acc) = TM.cbmc(lattice,chains)
             print "CBMC"

@@ -1,39 +1,11 @@
-__author__ = 'Maggie'
-
 #!/usr/bin/python
 import numpy as np
 import math
 
-"""
-Contains miscellaneous analysis methods:
-   - choose(n,k): Creates coefficients for the binomial distribution (Andrew Dalke)
-       n - number of trials
-       k - number of sucesses
-   - calcenergy(chains, lattice): Calculates the free energy of a given configuration
-       chains - array of chain coordinates for the lattice
-       lattice - matrix of available lattice sites
-   - chains_to_xyz(chains, filename): converts the chains array into an xyz file with labels for Carbon as the long chains and nitrogen as the short chains.
-        chains - array of coordiantes of each monomer
-        filename - Name of file to be created
-    - store_energies(energy, n, alph): Writes the energies to a flie
-        energy - the value from calcenergy
-        n - number of trial moves
-        alph - a,b,c,etc. for which starting config. it it
-    - acceptance_rate(i, count): Number of moves that were accepted
-        i - number of trial moves taken
-        count - number of trial moves accepted
-    - sep_analysis(chains): Sorts segments into bins based on nearest neighbors. Simulated MAULDI, binomial
-        chains - array of chain coordinates
-    - SSR(analysis, binomial): Takes the sum of square residual between the expected binomial and analysis from sep_analysis
-        analysis - the distribution using bins.
-        binomial - binomial distribution.
-
-"""
-
+# Creates coefficients for the binomial distribution (Andrew Dalke)
+#   n = number of trials
+#   k = number of successes
 def choose(n, k):
-    """
-    A fast way to calculate binomial coefficients by Andrew Dalke (contrib).
-    """
     if 0 <= k <= n:
         ntok = 1
         ktok = 1
@@ -45,6 +17,9 @@ def choose(n, k):
     else:
         return 0
 
+# Calculates the free energy of a given configuration
+#   chains = array of chain coordinates for the lattice
+#   lattice = matrix of available lattice sites
 def calcenergy(chains, lattice):
     (L, M, P) = lattice.shape
     nns_odd = np.array([(-1, -1, 0), (0, -1, 0), (1, -1, 0), (-1, 0, 0), (1, 0, 0), (0, 1, 0), (0,0,-1),(0,0,1)])
@@ -55,7 +30,6 @@ def calcenergy(chains, lattice):
     chiAA = 0
     chiBB = 0
     chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,chiAA,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),chiBB]])
-    #0 = solvent, 1 = substrate, 2 = polymer A, 3 = polymer B
     for chain in chains:
         #print chain
         length = chain.shape[0]
@@ -65,9 +39,9 @@ def calcenergy(chains, lattice):
                     nns = nns_even
             else:
                     nns = nns_odd
-            neighbors = [[(neighbor[0]+monomer[0])%(L-1) ,(neighbor[1]+monomer[1])%(M-1) , (neighbor[2]+monomer[2])%(P-1) ] for neighbor in nns]
+            neighbors = [[int((neighbor[0]+monomer[0])%(L-1)) ,int((neighbor[1]+monomer[1])%(M-1)) , int((neighbor[2]+monomer[2])%(P-1)) ] for neighbor in nns]
             for neighbor in neighbors:
-                total_energy += chi[lattice[(monomer[0]),(monomer[1]),(monomer[2])] ,lattice[(neighbor[0]),(neighbor[1]),(neighbor[2])]]
+                total_energy += chi[int(lattice[int(monomer[0]),int(monomer[1]),int(monomer[2])]) ,int(lattice[int(neighbor[0]),int(neighbor[1]),int(neighbor[2])])]
                 #total_energy += chiAS/2.0
 
     """ if chainlength < length:
@@ -95,7 +69,9 @@ def calcenergy(chains, lattice):
                         total_energy += chiAS/2.0"""
     return total_energy
 
-
+# Converts the chains array into an xyz file with carbon labeled as the long chains and nitrogen as the short chains
+#   chains = array of coordiantes of each monomer
+#   filename = name of file to be created
 def chains_to_xyz(chains,filename,lattice):
     chainlength_A = chains[0].shape[0]
     chainlength_B = int(chainlength_A*.33)+1
@@ -113,24 +89,32 @@ def chains_to_xyz(chains,filename,lattice):
             #if distance > 13:
             #    print 'distance between tether is ' + str(distance)
             if chain.shape[0] == chainlength_A:
-                moietyA = lattice[monomer[0], monomer[1], monomer[2]]
+                moietyA = lattice[int(monomer[0]), int(monomer[1]), int(monomer[2])]
                 xyzfile.write(str(moietyA)+ " " +str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
             elif chain.shape[0] == chainlength_B:
-                moietyB = lattice[monomer[0], monomer[1], monomer[2]]
+                moietyB = lattice[int(monomer[0]), int(monomer[1]), int(monomer[2])]
                 xyzfile.write(str(moietyB)+" " + str(monomer[0])+' '+str(monomer[1])+' '+ str(monomer[2])+'\n')
             else:
                 xyzfile.write('O '+str(monomer[0])+' '+str(monomer[1])+' '+ '0'+'\n')
     xyzfile.close()
 
+# Writes the energies to a file
+#   energy = the value calculated using calcenergy
+#   n = number of trial moves
 def store_energies(energy, n, alph):
     energyfile = open('EnergiesDual_'+str(n)+alph,'a')
     energyfile.write(str(energy)+"\n")
 
+# Number of moves that were accepted
+#   i = number of trial moves taken
+#   count = number of trial moves accepted
 def acceptance_rate(i, count):
     rate = count/float(i)
     print "\n\n The rate is: " + str(rate*100) + "%"
     return rate
 
+# Sorts segments into bins based on nearest neighbors (simulated MAULDI, binomial)
+#   chains = array of chain coordinates
 def sep_analysis(chains):
     count = 0
     sort = np.array([0,0,0])
@@ -165,7 +149,9 @@ def sep_analysis(chains):
             five_b += 1
     return(zero_b, one_b, two_b, three_b, four_b, five_b)
 
-
+# Takes the sum of square residual between the expected binomial and analysis from sep_analysis
+#   analysis = the distribution using bins
+#   binomial = binomial distribution
 def SSR(analysis, binomial):
     ssr = 0
     for i in range(0,6):

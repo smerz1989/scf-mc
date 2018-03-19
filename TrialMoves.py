@@ -20,12 +20,12 @@ def cbmc(lattice, chains):  #configurational bias monte carlo
     #monomer = rnd.choice(chain[chain[:,0]>=0])
 
     #find the zeroith monomer
-    monomer_0 = chain[0]
+    monomer_0 = map(int,chain[0])
     #choose a random monomer to start the regrowth from
     index = rnd.choice(range(0,length))
 
     #Look up moiety of the zeroith monomer
-    moiety = lattice[monomer_0[0], monomer_0[1], monomer_0[2]]
+    moiety = int(lattice[monomer_0[0], monomer_0[1], monomer_0[2]])
 
     #while monomer[0] < 1 and monomer[1] < 1:
     #    monomer = rnd.choice(chain)
@@ -92,7 +92,7 @@ def take_empty(lattice, chains, graft_points):
     num = rnd.randint(0,numchains-1)
     chain = chains[num,:,:]
     monomer = chain[0]
-    moiety = lattice[monomer[0], monomer[1], monomer[2]]
+    moiety = int(lattice[monomer[0], monomer[1], monomer[2]])
     #print chain
     chainlength = chain[chain[:,0]>=0].shape[0]
     #index = chain[0][:]
@@ -152,11 +152,9 @@ def swap(lattice, chains):
 
 #We need to find the moiety of the chains so we can switch the moeities of the swaped chains.
     monomer1 = chain1[0]
-    moiety1 = lattice[monomer1[0], monomer1[1], monomer1[2]]
-    monomer2 = chain2[0]
+    moiety1 = lattice[int(monomer1[0]), int(monomer1[1]), int(monomer1[2])]
+    monomer2 = map(int,chain2[0])
     moiety2 = lattice[monomer2[0], monomer2[1], monomer2[2]]
-
-
 
     while length1 == length2:
         chain2 = rnd.choice(chains)
