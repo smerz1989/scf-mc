@@ -30,7 +30,6 @@ if __name__== '__main__':
         os.mkdir(os.getcwd()+'/data')
     an.chains_to_xyz(chains, 'InitDual_'+str(x)+y, lattice)
 
-    # Choose between
     for i in range(0,x):
         rng = rnd.uniform(0,1)
         if rng > 0.66:
