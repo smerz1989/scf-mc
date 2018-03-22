@@ -1,5 +1,3 @@
-__author__ = 'Maggie'
-
 import numpy as np
 import random as rnd
 import matplotlib.pyplot as plt
@@ -17,10 +15,8 @@ def get_avg(file):
     avg = sum(set)/len(set)
     return avg
 
-
-
 def chunks(l, n):
-    b =[]
+    b = []
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
         b += [l[i:i+n]]
@@ -32,9 +28,7 @@ def delta_G_T(file,T,L):
     E_Section = Energy[0:T]
     t_mean = np.mean(E_Section)
     Chunks = E_Section.reshape((T/L),L)
-    #Chunks = chunks(Energy, L)
     Sum = 0
-
 
     for i in range (0,T/L):
         chunk = Chunks[i]
@@ -44,9 +38,6 @@ def delta_G_T(file,T,L):
 
     R = (L/float(T))*np.sqrt(Sum)
     return R
-
-
-
 
 if __name__ == '__main__':
 
@@ -62,11 +53,8 @@ if __name__ == '__main__':
         y = delta_G_T(file, T, L)
         Y += [y]
         X += [float(1)/np.sqrt(T)]
-        #X += [T]
         if T%1000 == 0:
             print("completed" + str(T)+ "steps")
-
-
 
     print len(Y)
     print num
@@ -84,54 +72,3 @@ if __name__ == '__main__':
     plt.figure(2)
     plt.plot(np.arange(0,Tot),Energy)
     plt.show()
-
-
-
-"""    Energy = np.loadtxt('Energies3D_90000a')
-
-    avg_tot = np.mean(Energy)
-    print(avg_tot)
-    std_tot = np.std(Energy)
-    print(std_tot)
-    T = len(Energy)
-    L = T/100
-    print(T)
-    print(L)
-
-    index = L
-    sum = 0
-    count = 0
-    stands = []
-    adding_sums = []
-
-    while index < T-6*L+1:
-        chunk = Energy[index-L:index+1]
-        c_mean = np.mean(chunk)
-        large_mean = np.mean(Energy[0:index+1])
-        stand = np.std(chunk)
-        stands += [stand]
-        square = (c_mean-large_mean)**2
-        sum += square
-        count += 1
-        STD4 = np.sqrt(sum/count)
-        adding_sums += [np.sum(adding_sums)+ STD4]
-        index = index +L
-
-
-    print(sum)
-    #print(len(sum))
-    print(count)
-    print(stands)
-    print(adding_sums)
-
-    STD = np.sqrt(sum/100)
-    STD2 = (float(L)/T)*(np.sqrt(sum))
-    print(STD)
-    print(STD2)
-
-   # t = [i for i in range(0,1000)]
-   # x = 1./np.sqrt(t)
-    #plt.plot(x,adding_sums)
-"""
-
-

@@ -1,7 +1,5 @@
-__author__ = 'Maggie'
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 def get_avg(file):
 
@@ -29,13 +27,12 @@ def choose(n, k):
     else:
         return 0
 
-
 def binomial_graph(file, p):
     bin = open(file, 'r')
     yvals = np.loadtxt(bin, delimiter=',')
     binomial = []
     for k in xrange(0,4):
-        n =3
+        n = 3
         binomial += [choose(n,k)*((1-p)**k)*(p**(n-k))]
 
     t = np.array([0,1,2,3])
@@ -43,23 +40,10 @@ def binomial_graph(file, p):
     fig, ax = plt.subplots()
     rects1 = ax.bar(t.T,binomial,width, color ='r' )
     rects2 = ax.bar(t.T+width, yvals, width, color='b')
-    #plt.plot(t.T,binomial,'r')
+
     print binomial
     print yvals
-    #y = [p, 0, 0, (1-p)]
 
-    #print yvals
-   # for i in range(yvals.shape[0]):
-   #     if i == 1:
-    #        plt.plot(t.T,yvals[i],'b')
-     #   elif i == 2:
-      #      plt.plot(t.T,yvals[i],'g')
-      #  elif i == 3:
-      #      plt.plot(t.T,yvals[i],'c')
-      #  else:
-      #      plt.plot(t.T, yvals[i], 'm')
-
-   # plt.plot(t.T, yvals)
     ax.set_xticks(t.T+width)
     ax.set_xticklabels( ('0', '1', '2', '3') )
 
@@ -84,7 +68,6 @@ if __name__ == '__main__':
                 ysa += (speca[i] - ya[i])**2
             print ysa
             Ys += [ysa]
-
         elif i == 50:
             SSR200 = get_avg("Saved_SSRi")
             yvals += [SSR200]
@@ -113,11 +96,8 @@ if __name__ == '__main__':
     print xvals
     print Ys
 
-   # badErr = [.0164822411]*7
-
     plt.plot(xvals, yvals)
-    #plt.errorbar(xvals, yvals, xerr=0,yerr=badErr)
-    #plt.plot(xvals, Ys)
+
     plt.title("Change in SSR with concentration of short chains (Bad Solvent)", fontsize= 20)
     plt.xlabel("phiB")
     plt.xlim(0,1)
@@ -125,7 +105,6 @@ if __name__ == '__main__':
     plt.show()
 
     binomial_graph("Saved_spectraHex10b", .1)
-
     binomial_graph("Saved_spectraHex20b", .2)
     binomial_graph("Saved_spectraHex40b", .4)
     binomial_graph("Saved_spectraHex60b", .6)

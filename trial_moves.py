@@ -1,4 +1,3 @@
-__author__ = 'Maggie'
 #!/usr/bin/python
 import numpy as np
 import random as rnd
@@ -6,56 +5,34 @@ import math
 import initiation as init
 import analysis as an
 
-
-
-def cbmc(lattice, chains):  #configurational bias monte carlo
+# Configurational-Bias Monte Carlo
+def cbmc(lattice, chains):
     count = 0
     chains_old = np.copy(chains)
     lattice_old = np.copy(lattice)
     energy_old = an.calcenergy(chains, lattice)
     chain = rnd.choice(chains)
     length = chain[chain[:,0]>=0].shape[0]
-   # print chain
 
-    #monomer = rnd.choice(chain[chain[:,0]>=0])
-
-    #find the zeroith monomer
     monomer_0 = map(int,chain[0])
-    #choose a random monomer to start the regrowth from
+
+    # Randomly choose a monomer to start the regrowth from
     index = rnd.choice(range(0,length))
 
-    #Look up moiety of the zeroith monomer
+    # Look up the moiety of the zeroth monomer
     moiety = int(lattice[monomer_0[0], monomer_0[1], monomer_0[2]])
 
-    #while monomer[0] < 1 and monomer[1] < 1:
-    #    monomer = rnd.choice(chain)
-    #    print "new monomer"
-    #chain = chain.tolist()
-
-
-    #init_index = np.intersect1d(np.where((chain[:,0] == monomer[0]))[0], np.where((chain[:,1] == monomer[1]))[0])
-    #index = np.intersect1d(init_index, np.where((chain[:,2] == monomer[2]))[0])
-
-
-    #if chain[length-1, 0] < 0 and chain[length-1, 1] < 0:
-    #    length = int(length*.33)+1
-
-#A check to make sure there is only one index. Not needed if doing the random integer method.
-    #if index.shape[0] > 1:
-     #   print index
-      #  print monomer
     if np.any(index) > length:
         print 'monomer is: ' + str(monomer) + 'value at index is: ' + str(chain[index,:])
         index = length - 1
         monomer = chain[index,:,:]
         print 'move index back'
-    numchains = length - index #have to do index[0] if using array form
+    numchains = length - index
     lattice[chain[index:length,0].astype(int),chain[index:length,1].astype(int), chain[index:length,2].astype(int)] = 0
     deleted = init.hex_Saw(lattice,numchains,moiety,chain[index])
     if np.any(deleted == -1):
         print "no saw found"
         return (lattice_old, chains_old, energy_old,count)
-    #print chain
     print chain[2],
     print "chain 2"
     chain[index:length,:] = [0,0,0]
@@ -93,19 +70,18 @@ def take_empty(lattice, chains, graft_points):
     chain = chains[num,:,:]
     monomer = chain[0]
     moiety = int(lattice[monomer[0], monomer[1], monomer[2]])
-    #print chain
+
     chainlength = chain[chain[:,0]>=0].shape[0]
-    #index = chain[0][:]
+
     index = num
-    #print chain
+
     print index
     print chainlength
-    #print chains[num,:,:]
+
     chain[0:chainlength,:] = [0,0,0]
-    #print chains[num,:,:]
+
     graft_point = rnd.sample(graft_points,1)
-#    while lattice[graft_point[0]][graft_point[1]][graft_point[2]]== 1:
-#        graft_point = rnd.sample(graft_points,1)
+
     print graft_point[0]
 
     deleted = init.hex_Saw(lattice,chainlength,moiety, graft_point[0])
@@ -113,7 +89,7 @@ def take_empty(lattice, chains, graft_points):
         print "no saw found"
         return (lattice_old, chains_old, energy_old,count)
     chains[num,0:chainlength,:] = deleted
-    #print chains[num,:,:]
+
     length_new = chain[chain[:,0]>=0].shape[0]
     energy_new = an.calcenergy(chains, lattice)
     if chainlength != length_new:
@@ -138,7 +114,6 @@ def take_empty(lattice, chains, graft_points):
         print "reject"
         return (lattice_old, chains_old, energy_old, count)
 
-
 def swap(lattice, chains):
     count = 0
     chains_old = np.copy(chains)
@@ -149,50 +124,43 @@ def swap(lattice, chains):
     chain2 = rnd.choice(chains)
     length2 = chain2[chain2[:,0]>=0].shape[0]
 
-
-#We need to find the moiety of the chains so we can switch the moeities of the swaped chains.
+    # Find the moiety of the chains so we can switch the moieties of the swapped chains
     monomer1 = chain1[0]
     moiety1 = lattice[int(monomer1[0]), int(monomer1[1]), int(monomer1[2])]
     monomer2 = map(int,chain2[0])
     moiety2 = lattice[monomer2[0], monomer2[1], monomer2[2]]
-
     while length1 == length2:
         chain2 = rnd.choice(chains)
         length2 = chain2[chain2[:,0]>=0].shape[0]
     if length1 < length2:
         #We will be deleting some of chain2 and growing onto chain1
         #the moiety of chain2 = moiety1 and the moiety of chain1 = moiety2 and moiety of regrowth = moiety2
-        #print "if"
 
-        #Swap moieties
+        # Swap the moieties
         for step1 in chain1:
             lattice[step1[0],step1[1],step1[2]] = moiety2
         for step2 in chain2:
             lattice[step2[0],step2[1],step2[2]] = moiety1
 
-
-        #Part without zeros = acceptable
+        # Find the acceptable part, or the part without zeros
         acceptable = chain1[chain1[:,0]>=0]
-        #finding the # in acceptable
+        # Find the number of acceptable results in acceptable
         index = acceptable.shape[0]
-        #numchain = thee number of monomer units to regrow on the short chain
+        # numchain is the number of monomer units to regrow on the short chain
         numchains = length2 - index
-        #changing the value of the excess units in the long chain to 0. deleting them
+        # Change the value of the excess units in the long chain to 0 (essentially deleting them)
         lattice[chain2[index-1:length2,0].astype(int),chain2[index-1:length2,1].astype(int), chain2[index-1:length2,2].astype(int)] = 0
-        #Regrowing monomers onto short chain
+        # Regrow monomers onto short chain
         deleted = init.hex_Saw(lattice,numchains+1,moiety2,chain1[index-1,:])
         if np.any(deleted == -1):
             print "no saw found"
             return (lattice_old, chains_old, energy_old,count)
-        #adding regrowth to the chain
+        # Add regrowth to the chain
         chain1[index-1:length2,:] = deleted
-        #deleting in long chain
+        # Delete monomers in long chain
         chain2[index:length2,:] = -1
 
     else:
-        #print "else"
-        #lenght2<length1
-        #
         acceptable = chain2[chain2[:,0]>=0]
         index = acceptable.shape[0]
         numchains = length1 - index

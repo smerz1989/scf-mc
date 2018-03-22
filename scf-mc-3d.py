@@ -74,13 +74,11 @@ if __name__== '__main__':
 
     binomial = []
     for k in xrange(0,6):
-        m =5
+        m = 5
         binomial += [an.choose(m,k)*(0.5**k)*(0.5**(m-k))]
 
     saved = np.save(os.getcwd()+'/data/Safe_SSRDual'+str(x)+y, analysis)
 
-    #spectra = open(r'C:\Users\Maggie\Documents\GitHub\scf-mc\Saved_spectra3D_'+str(n), 'w')
-    #with spectra:
     spectra = open(os.getcwd()+'/data/Saved_spectraDual_'+str(x), 'a')
     spectra.write(str(analysis) +"\n")
     spectra.flush()
@@ -88,7 +86,7 @@ if __name__== '__main__':
 
     ssr = an.SSR(analysis, binomial)
     SSR = open(os.getcwd()+'/data/Saved_SSRDual_'+str(x), 'a')
-    SSR.write('-1\t' + str(ssr) + '\t' + '10000\n')
+    SSR.write('-1\t'+str(ssr)+'\t'+'10000\n')
     SSR.flush()
     SSR.close()
 
