@@ -109,9 +109,7 @@ def fill_cylinder(lattice, radius):
 def initialize_lattice(shape, numchains, chainlength, moieties, radius):
 
     # chainlengthA is 75% of chainlength, and chainlengthB is the remainder
-    ## OLD: chainlengthA = int(chainlength * 0.75)
-    ## OLD: chainlengthB = chainlength - chainlengthA
-    chainlengthA = int(chainlength/20.75)
+    chainlengthA = int(chainlength * 0.75)
     chainlengthB = chainlength - chainlengthA
 
     # numchainsA is 50% of numchains, and numchainsB is the remainder

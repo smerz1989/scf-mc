@@ -17,8 +17,7 @@ import trial_moves as tm
 if __name__== '__main__':
 
     # Initializes the lattice and chains, and defines and prints the number of graft points
-    ## OLD: (lattice, graft_points, chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
-    (lattice, graft_points, chains) = init.initialize_lattice((200, 200, 20), 708, 60, [2, 3], 20)
+    (lattice, graft_points, chains) = init.initialize_lattice((200, 200, 20), 708, 16, [2, 3], 20)
     print len(graft_points)
 
     # Initializes the step counter and saves system variables for naming purposes
