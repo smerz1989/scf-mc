@@ -17,7 +17,8 @@ import trial_moves as tm
 if __name__== '__main__':
 
     # Initializes the lattice and chains, and defines and prints the number of graft points
-    (lattice, graft_points, chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
+    ## OLD: (lattice, graft_points, chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
+    (lattice, graft_points, chains) = init.initialize_lattice((200, 200, 20), 708, 60, [2, 3], 20)
     print len(graft_points)
 
     # Initializes the step counter and saves system variables for naming purposes
@@ -67,6 +68,7 @@ if __name__== '__main__':
     for chain in chains:
         chain = chain[chain[:,0] >= 0]
         ax.plot(chain[:,0],chain[:,1],chain[:,2])
+    plt.savefig(os.getcwd() + '/data/3dplot_' + str(x) + y + ".pdf")
 
     plt.plotfile('EnergiesDual_'+str(x)+y)
     plt.savefig(os.getcwd()+'/data/energyDual_' +str(x)+y+".pdf")
@@ -102,7 +104,8 @@ if __name__== '__main__':
 
     print binomial
 
+    fig2 = plt.figure()
     t = np.array([0,1,2,3,4,5])
     plt.plot(t.T,binomial,'r')
     plt.plot(t.T,analysis,'b')
-    plt.savefig(os.getcwd()+'/data/binomialDual'+str(x)+y+".pdf")
+    plt.savefig(os.getcwd()+'/data/binomialDual_'+str(x)+y+".pdf")

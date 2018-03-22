@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import numpy as np
 import math
+import os
 
 # Creates coefficients for the binomial distribution (Andrew Dalke)
 #   n = number of trials
@@ -31,7 +32,6 @@ def calcenergy(chains, lattice):
     chiBB = 0
     chi = np.array([[0,0,chiAS,chiAS],[0,0,0,0],[chiAS,0,chiAA,(chiAB/2.0)],[chiAS,0,(chiAB/2.0),chiBB]])
     for chain in chains:
-        #print chain
         length = chain.shape[0]
         chainlength = chain[chain[:,0]>=0].shape[0]
         for monomer in chain[0:chainlength,:]:
@@ -42,42 +42,18 @@ def calcenergy(chains, lattice):
             neighbors = [[int((neighbor[0]+monomer[0])%(L-1)) ,int((neighbor[1]+monomer[1])%(M-1)) , int((neighbor[2]+monomer[2])%(P-1)) ] for neighbor in nns]
             for neighbor in neighbors:
                 total_energy += chi[int(lattice[int(monomer[0]),int(monomer[1]),int(monomer[2])]) ,int(lattice[int(neighbor[0]),int(neighbor[1]),int(neighbor[2])])]
-                #total_energy += chiAS/2.0
 
-    """ if chainlength < length:
-            for monomer in chain[0:chainlength,:]:
-               # print monomer
-                if monomer[0]%2 == 0:
-                    nns = nns_even
-                else:
-                    nns = nns_odd
-                neighbors = [[(neighbor[0]+monomer[0])%(L-1) ,(neighbor[1]+monomer[1])%(M-1) , (neighbor[2]+monomer[2])%(P-1) ] for neighbor in nns]
-                for neighbor in neighbors:
-                    if lattice[(neighbor[0]),(neighbor[1]),(neighbor[2])] == 0:
-                        total_energy += chiAS/2.0
-        else:
-            for monomer in chain:
-                if monomer[0]%2 == 0:
-                    nns = nns_even
-                else:
-                    nns = nns_odd
-                neighbors = [[(neighbor[0]+monomer[0])%(L-1) ,(neighbor[1]+monomer[1])%(M-1) , (neighbor[2]+monomer[2])%(P-1) ] for neighbor in nns]
-                for neighbor in neighbors:
-                   # print neighbor[0]
-                    #print str(L) + "  " + str(M) +"  "+str(P)
-                    if lattice[(neighbor[0]),(neighbor[1]), (neighbor[2])] == 0:
-                        total_energy += chiAS/2.0"""
     return total_energy
 
 # Converts the chains array into an xyz file with carbon labeled as the long chains and nitrogen as the short chains
 #   chains = array of coordiantes of each monomer
 #   filename = name of file to be created
-def chains_to_xyz(chains,filename,lattice):
+def chains_to_xyz(chains, filename, lattice):
     chainlength_A = chains[0].shape[0]
     chainlength_B = int(chainlength_A*.33)+1
     numchains = chains.shape[0]
 
-    xyzfile = open(filename ,'a')
+    xyzfile = open(os.getcwd()+'/data/filename', 'a')
     numatoms = chainlength_A*int(numchains/2) + chainlength_B*(numchains-int(numchains/2));
    # numatoms = numchains*30
     xyzfile.write(str(numatoms)+'\n\n')
@@ -127,7 +103,6 @@ def sep_analysis(chains):
     for chain_sel in chains:
         nn_list = [(chain, (math.sqrt((chain_sel[0][0]-chain[0][0])**2 + (chain_sel[0][1]-chain[0][1])**2 + (chain_sel[0][2]-chain[0][2])**2)),(-1 if len(chain[chain[:,0]>=0]) == 4 else 1 )) \
          for chain in chains if ((math.sqrt((chain_sel[0][0]-chain[0][0])**2 + (chain_sel[0][1]-chain[0][1])**2 + (chain_sel[0][2]-chain[0][2])**2)) <2)]
-        #print len(nn_list)
         type = []
         for i in xrange(len(nn_list)-1):
             count = 0

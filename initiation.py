@@ -3,7 +3,6 @@ import random as rnd
 
 def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
     (L, M, D) = lattice.shape
-    # print "Lattice at beginning is "+str(lattice)
     nns_odd = np.array([(-1, -1, 0), (0, -1, 0), (1, -1, 0), (-1, 0, 0), (1, 0, 0), (0, 1, 0), (0,0,-1),(0,0,1)])
     nns_even = np.array([(0, -1, 0), (-1, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (-1, 1, 0),(0,0,-1),(0,0,1)])
     complete = False
@@ -16,9 +15,10 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
             (row, col, layer) = (np.random.randint(0, L - 1), np.random.randint(0, M - 1),np.random.randint(0, D - 1))
         else:
             (row, col, layer) = grafted_to
-        if lattice[row,col,layer] > 0:          #makes sure there is nothing already there
+        # Checks to see if there is already something in that lattice position
+        if lattice[row,col,layer] > 0:
             return -1
-        # print "Starting location is "+str(row)+","+str(col)
+
         steps[0, :] = [row, col,layer]
         lattice[row, col,layer] = moiety
         for i in xrange(numsteps - 1):
@@ -28,7 +28,7 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
                 currentNNs = np.array([[int(row + nn[0]) % L, int(col + nn[1]) % M,int(layer + nn[2]) % D] for nn in nns_odd])
 
             possibleMoves = currentNNs[np.where((lattice[currentNNs[:, 0], currentNNs[:, 1], currentNNs[:, 2]] == 0))[0], :]
-            #print "Possible moves are "+str(possibleMoves)
+
             if (possibleMoves.shape[0] > 0):
                 move = rnd.choice(possibleMoves)
                 complete = True
@@ -37,34 +37,34 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
                 lattice[steps[0:(i + 1), 0], steps[0:(i + 1), 1],steps[0:(i + 1), 2]] = 0
                 complete = False
                 break
-            # print "Chosen move is "+str(move)
+
             steps[i + 1, :] = move
             lattice[move[0], move[1], move[2]] = moiety
             (row, col, layer) = (move[0], move[1], move[2])
         tries += 1;
+
     if (not complete):
         return -1
-    print str(numsteps) + " long Chain grown with " + str(numrestarts) + " restarts"
-    return steps
 
+    print str(numsteps) + " long chain grown with " + str(numrestarts) + " restarts."
+    return steps
 
 def graft_chains(lattice, graft_points, chainlength, numchains, moieties):
     chosen_points = rnd.sample(graft_points,numchains) if numchains<=graft_points.shape[0] else -1
     chains = np.empty((numchains,chainlength,3),dtype=int)
     idx = 0
-  #  print chosen_points[0]
+
     for graft_point in (chosen_points):
         chain = -1
         point = graft_point
         while np.any(chain==-1):
             chain = hex_Saw(lattice,chainlength,moieties,point)
             if np.any(chain == -1):
-                print 'moving chain to new graft point'
+                print 'Moving chain to new graft point.'
                 point = rnd.choice(graft_points)
         chains[idx,:,:] = chain
         idx += 1
-        #print idx
-        #print graft_point
+
     return chains
 
 # Finds the graft points on a lattice by filling in valid coordinates
@@ -75,7 +75,6 @@ def fill_cylinder(lattice, radius):
     # Finds the center of the 3D lattice by dividing each dimension by 2
 	center = [lattice.shape[0]/2, lattice.shape[1]/2, lattice.shape[2]/2]
 
-    #
 	startoffset = 0
 	endoffset = 0
 
@@ -88,17 +87,16 @@ def fill_cylinder(lattice, radius):
 		else:
 			endoffset += 1
 
-        #
 		lattice[center[0]+i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
 		lattice[center[0]-i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
 		lattice[(center[0]-i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
 		lattice[(center[0]+i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
 
-    %
 	lattice[center[0]+radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
 	lattice[center[0]-radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
 	graft_points = np.transpose(np.vstack(np.where(lattice == -1)))
-	print "Graft points look like this "+str(graft_points)
+
+	print "The graft points look like this...\n"+str(graft_points)
 	lattice[graft_points[:,0],graft_points[:,1],graft_points[:,2]]=0
 	return graft_points
 
@@ -111,7 +109,9 @@ def fill_cylinder(lattice, radius):
 def initialize_lattice(shape, numchains, chainlength, moieties, radius):
 
     # chainlengthA is 75% of chainlength, and chainlengthB is the remainder
-    chainlengthA = int(chainlength * 0.75)
+    ## OLD: chainlengthA = int(chainlength * 0.75)
+    ## OLD: chainlengthB = chainlength - chainlengthA
+    chainlengthA = int(chainlength/20.75)
     chainlengthB = chainlength - chainlengthA
 
     # numchainsA is 50% of numchains, and numchainsB is the remainder
