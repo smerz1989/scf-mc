@@ -47,10 +47,10 @@ if __name__== '__main__':
 
     for i in range(0,x):
         rng = rnd.uniform(0,1)
-        if rng > 0.66:
+        if rng > 2.0 / 3:
             (lattice, chains, total_energy, acc) = tm.cbmc(lattice, chains)
             print "CBMC"
-        elif rng > 0.33:
+        elif rng > 1.0 / 3:
             (lattice, chains, total_energy, acc) = tm.take_empty(lattice, chains, graft_points)
             print "empty"
         else:
@@ -60,7 +60,7 @@ if __name__== '__main__':
 
         # Record the chains every 50,000 steps so that the SSR can be taken later
         if i % 50000 == 0:
-            np.save(os.getcwd() + '/data/chainsSSRDual' + str(i + 1) + y, chains)
+            np.save(os.getcwd() + '/data/chainsSSRDual_' + str(i + 1) + y, chains)
 
         # Record the chains every 100 configurations
         if i % 100 == 0:
@@ -76,9 +76,9 @@ if __name__== '__main__':
     analysis = tuple(x / float(sum(analysis)) for x in analysis)
     print analysis
     if (x - 1) % 50000 == 0:
-        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual' + str(x) + y + '.npy')
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual_' + str(x) + y + '.npy')
     else:
-        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual' + str(x - x % 50000 + 1) + y + '.npy')
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual_' + str(x - x % 50000 + 1) + y + '.npy')
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -87,7 +87,7 @@ if __name__== '__main__':
         ax.plot(chain[:, 0], chain[:, 1], chain[:, 2])
     plt.savefig(os.getcwd() + '/data/3dplot_' + str(x) + y + ".pdf")
 
-    plt.plotfile(os.getcwd() + '/data/EnergiesDual_' + str(x) + y)
+    plt.plotfile(os.getcwd() + '/data/energyDual_' + str(x) + y)
     plt.savefig(os.getcwd() + '/data/energyDual_' + str(x) + y + ".pdf")
     plt.close()
 
@@ -96,27 +96,27 @@ if __name__== '__main__':
         m = 5
         binomial += [an.choose(m, k) * (0.5 ** k) * (0.5 ** (m - k))]
 
-    saved = np.save(os.getcwd() + '/data/Safe_SSRDual' + str(x) + y, analysis)
+    saved = np.save(os.getcwd() + '/data/savedSSRDual_' + str(x) + y, analysis)
 
-    spectra = open(os.getcwd() + '/data/Saved_spectraDual_' + str(x), 'a')
+    spectra = open(os.getcwd() + '/data/savedSpectraDual_' + str(x), 'a')
     spectra.write(str(analysis) + "\n")
     spectra.flush()
     spectra.close()
 
     ssr = an.SSR(analysis, binomial)
-    SSR = open(os.getcwd() + '/data/Saved_SSRDual_' + str(x), 'a')
+    SSR = open(os.getcwd() + '/data/savedSSRDual_' + str(x), 'a')
     SSR.write('-1\t' + str(ssr) + '\t' + '10000\n')
     SSR.flush()
     SSR.close()
 
-    S = np.loadtxt(os.getcwd() + '/data/Saved_SSRDual_' + str(x))
+    S = np.loadtxt(os.getcwd() + '/data/savedSSRDual_' + str(x))
 
     if y != 'a':
         set = []
         for line in S:
             set += [line[1]]
         set = map(float, set)
-        std = open(os.getcwd() + '/data/Standard_devDual_' + str(x), 'a')
+        std = open(os.getcwd() + '/data/stdDevDual_' + str(x), 'a')
         std.write(str(np.std(set)) + '\n')
 
     print binomial

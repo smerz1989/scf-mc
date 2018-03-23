@@ -23,9 +23,9 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
         lattice[row, col,layer] = moiety
         for i in xrange(numsteps - 1):
             if (row % 2 == 0):
-                currentNNs = np.array([[int(row + nn[0]) % L, int(col + nn[1]) % M,int(layer + nn[2]) % D] for nn in nns_even])  # periodic bc
+                currentNNs = np.array([[(row + nn[0]) % L, (col + nn[1]) % M, (layer + nn[2]) % D] for nn in nns_even])  # periodic bc
             else:
-                currentNNs = np.array([[int(row + nn[0]) % L, int(col + nn[1]) % M,int(layer + nn[2]) % D] for nn in nns_odd])
+                currentNNs = np.array([[(row + nn[0]) % L, (col + nn[1]) % M, (layer + nn[2]) % D] for nn in nns_odd])
 
             possibleMoves = currentNNs[np.where((lattice[currentNNs[:, 0], currentNNs[:, 1], currentNNs[:, 2]] == 0))[0], :]
 
@@ -109,13 +109,13 @@ def fill_cylinder(lattice, radius):
 def initialize_lattice(shape, numchains, chainlength, moieties, radius):
 
     # chainlengthA is 75% of chainlength, and chainlengthB is the remainder
-    chainlengthA = int(chainlength * 0.75)
+    chainlengthA = chainlength * 3 / 4
     chainlengthB = chainlength - chainlengthA
     ## test: chainlengthB = int(chainlength/2)
     ## test: chainlengthA = chainlength - chainlengthB
 
     # numchainsA is 50% of numchains, and numchainsB is the remainder
-    numchainsA = int(numchains / 2)
+    numchainsA = numchains / 2
     numchainsB = numchains - numchainsA
 
     # Creates a lattice with dimensions defined by shape list
