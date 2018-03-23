@@ -14,7 +14,19 @@ import trial_moves as tm
 # NOTES
 # lattice length = 0.154 nm
 # moieties: solvent = 0, substrate = 1, polymer A = 2, polymer B = 3
-# x and y components of shape has to be at least 2*radius + 2*chainlength
+# x and y components of shape has to be at least 2 * radius + 2 * chainlength
+# parameters:
+#   chain lengths N_A and N_B (defined in scf-mc-3d.py line 24 and initiation.py lines 114-115)
+#   radius R (defined in scf-mc-3d.py line 24)
+#   surface densities sig_A and sig_B (used to calculate number of chains in scf-mc-3d.py line 24)
+#   Flory-Huggins parameter chi_AB (defined in analysis.py line 30)
+#   length of object L (defined in third value of list in scf-mc-3d.py line 24)
+# current run:
+#   sig_A = 0.25
+#   N_A = N_B = 30
+#   R = 2
+#   L = 60
+#   chi_AB = [0.0:0.1:1.0]
 
 if __name__== '__main__':
 
@@ -63,7 +75,10 @@ if __name__== '__main__':
     analysis = an.sep_analysis(chains)
     analysis = tuple(x / float(sum(analysis)) for x in analysis)
     print analysis
-    chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual' + str(x) + y + '.npy')
+    if (x - 1) % 50000 == 0:
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual' + str(x) + y + '.npy')
+    else:
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual' + str(x - x % 50000 + 1) + y + '.npy')
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -72,7 +87,7 @@ if __name__== '__main__':
         ax.plot(chain[:, 0], chain[:, 1], chain[:, 2])
     plt.savefig(os.getcwd() + '/data/3dplot_' + str(x) + y + ".pdf")
 
-    plt.plotfile('EnergiesDual_' + str(x) + y)
+    plt.plotfile(os.getcwd() + '/data/EnergiesDual_' + str(x) + y)
     plt.savefig(os.getcwd() + '/data/energyDual_' + str(x) + y + ".pdf")
     plt.close()
 
@@ -106,7 +121,8 @@ if __name__== '__main__':
 
     print binomial
 
-    fig2 = plt.figure()
+    fig1 = plt.figure()
+    ax1 = fig.add_subplot(111)
     t = np.array([0, 1, 2, 3, 4, 5])
     plt.plot(t.T, binomial, 'r')
     plt.plot(t.T, analysis, 'b')

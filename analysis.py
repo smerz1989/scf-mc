@@ -78,7 +78,7 @@ def chains_to_xyz(chains, filename, lattice):
 #   energy = the value calculated using calcenergy
 #   n = number of trial moves
 def store_energies(energy, n, alph):
-    energyfile = open('EnergiesDual_'+str(n)+alph,'a')
+    energyfile = open(os.getcwd() + '/data/EnergiesDual_'+str(n)+alph,'a')
     energyfile.write(str(energy)+"\n")
 
 # Number of moves that were accepted
