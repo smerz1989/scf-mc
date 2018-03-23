@@ -111,22 +111,24 @@ def initialize_lattice(shape, numchains, chainlength, moieties, radius):
     # chainlengthA is 75% of chainlength, and chainlengthB is the remainder
     chainlengthA = int(chainlength * 0.75)
     chainlengthB = chainlength - chainlengthA
+    ## test: chainlengthB = int(chainlength/2)
+    ## test: chainlengthA = chainlength - chainlengthB
 
     # numchainsA is 50% of numchains, and numchainsB is the remainder
     numchainsA = int(numchains / 2)
     numchainsB = numchains - numchainsA
 
     # Creates a lattice with dimensions defined by shape list
-    lattice = np.zeros(shape,dtype=int)
+    lattice = np.zeros(shape, dtype=int)
 
     # Finds the valid graft points on the lattice
     graft_points = fill_cylinder(lattice, radius)
 
     chains_A = graft_chains(lattice, graft_points, chainlengthA, numchainsA, moieties[0])
     chains_Bold = graft_chains(lattice, graft_points, chainlengthB, numchainsB, moieties[1])
-    chains_B = np.empty([numchainsB, chainlengthA, 3],dtype=int)
+    chains_B = np.empty([numchainsB, chainlengthA, 3], dtype=int)
     for i in range(numchainsB):
-        addition = np.full((chainlengthA-chainlengthB,3),-1, dtype=np.int)
-        chains_B[i] = np.concatenate((chains_Bold[i],addition),0)
-    chains = np.concatenate((chains_A,chains_B), 0)
+        addition = np.full((chainlengthA - chainlengthB, 3), -1, dtype=np.int)
+        chains_B[i] = np.concatenate((chains_Bold[i], addition), 0)
+        chains = np.concatenate((chains_A, chains_B), 0)
     return (lattice, graft_points, chains)
