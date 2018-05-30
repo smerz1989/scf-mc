@@ -1,101 +1,129 @@
 #!/usr/bin/python
-import numpy as np
-import random as rnd
+import analysis as an
+import initiation as init
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import os
+import random as rnd
 import sys
-import Initiation as init
-import TrialMoves as TM
-import Analysis as an
+import trial_moves as tm
 
+# NOTES
+# lattice length = 0.154 nm
+# moieties: solvent = 0, substrate = 1, polymer A = 2, polymer B = 3
+# x and y components of shape has to be at least 2 * radius + 2 * chainlength
+# parameters:
+#   chain lengths N_A and N_B (defined in scf-mc-3d.py line 24 and initiation.py lines 114-115)
+#   radius R (defined in scf-mc-3d.py line 24)
+#   surface densities sig_A and sig_B (used to calculate number of chains in scf-mc-3d.py line 24)
+#   Flory-Huggins parameter chi_AB (defined in analysis.py line 30)
+#   length of object L (defined in third value of list in scf-mc-3d.py line 24)
+# current run:
+#   sig_A = 0.25
+#   N_A = N_B = 30
+#   R = 2
+#   L = 60
+#   chi_AB = [0.0:0.1:1.0]
 
+if __name__== '__main__':
 
-if __name__=='__main__':
-    (lattice,graft_points,chains) = init.initialize_lattice((200,200,20),708,16,[2,3],20)
-    #previously 779
+    # Initializes the lattice and chains, and defines and prints the number of graft points
+    (lattice, graft_points, chains) = init.initialize_lattice((200, 200, 20), 708, 16, [2, 3], 20)
+    ## TEST: (lattice, graft_points, chains) = init.initialize_lattice((200, 200, 60), 708, 60, [2, 3], 2)
     print len(graft_points)
 
+    # Initializes the step counter and saves system variables for naming purposes
     count = 0
-    n = sys.argv[1]
-    alph = sys.argv[2]
-    #n = 5
-    #alph = 'f'
-    an.chains_to_xyz(chains, 'InitDual_'+str(n)+alph, lattice)
+    x = int(sys.argv[1])
+    y = sys.argv[2]
 
-    for i in range(0,int(n)):
-        rando = rnd.uniform(0,1)
-        if rando>.66:
-            (lattice, chains,total_energy, acc) = TM.cbmc(lattice,chains)
+    # Creates a new directory "data" and saves the initial setup to a file
+    if not os.path.exists(os.getcwd() + '/data'):
+        os.mkdir(os.getcwd() + '/data')
+    an.chains_to_xyz(chains, 'InitDual_' + str(x) + y, lattice)
+
+    for i in range(0,x):
+        rng = rnd.uniform(0,1)
+        if rng > 2.0 / 3:
+            (lattice, chains, total_energy, acc) = tm.cbmc(lattice, chains)
             print "CBMC"
-        elif rando > .33:
-            (lattice, chains, total_energy, acc) = TM.take_empty(lattice, chains, graft_points)
-            print "Empty"
+        elif rng > 1.0 / 3:
+            (lattice, chains, total_energy, acc) = tm.take_empty(lattice, chains, graft_points)
+            print "empty"
         else:
-            (lattice, chains, total_energy, acc) = TM.swap(lattice, chains)
+            (lattice,chains, total_energy, acc) = tm.swap(lattice, chains)
             print "SWAP"
-        an.store_energies(total_energy, n, alph)
+        an.store_energies(total_energy, x, y)
 
-        # Should add matrices for chemical moeity and identity in here
-        if (i) % 50000 == 0: #record the chain matrix every 50,000 so the SSR can be taken later.
-            np.save('chainsSSRDual'+str(i+1)+alph, chains)
-        if i % 100 == 0: # record every hundredth configuration
-            an.chains_to_xyz(chains, 'LongDual_'+str(n)+alph, lattice)
+        # Record the chains every 50,000 steps so that the SSR can be taken later
+        if i % 50000 == 0:
+            np.save(os.getcwd() + '/data/chainsSSRDual_' + str(i + 1) + y, chains)
+
+        # Record the chains every 100 configurations
+        if i % 100 == 0:
+            an.chains_to_xyz(chains, 'LongDual_' + str(x) + y, lattice)
+
         count += acc
 
-        an.acceptance_rate(i+1,count)
+        an.acceptance_rate(i + 1, count)
 
-    an.chains_to_xyz(chains, 'ShortDual_'+str(n)+alph, lattice)
+    an.chains_to_xyz(chains, 'ShortDual_' + str(x) + y, lattice)
 
     analysis = an.sep_analysis(chains)
-    analysis = tuple(x/float(sum(analysis)) for x in analysis)
+    analysis = tuple(x / float(sum(analysis)) for x in analysis)
     print analysis
-    chainsSSR = np.load('chainsSSRDual'+str(n)+alph)
+    if (x - 1) % 50000 == 0:
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual_' + str(x) + y + '.npy')
+    else:
+        chainsSSR = np.load(os.getcwd() + '/data/chainsSSRDual_' + str(x - x % 50000 + 1) + y + '.npy')
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     for chain in chains:
-        chain = chain[chain[:,0] >= 0]
-        ax.plot(chain[:,0],chain[:,1],chain[:,2])
-    #plt.show()
+        chain = chain[chain[:, 0] >= 0]
+        ax.plot(chain[:, 0], chain[:, 1], chain[:, 2])
+    plt.savefig(os.getcwd() + '/data/3dplot_' + str(x) + y + ".pdf")
 
-    plt.plotfile('EnergiesDual_'+str(n)+alph)
-    plt.savefig("energyDual_" +str(n)+alph+".pdf")
+    plt.plotfile(os.getcwd() + '/data/energyDual_' + str(x) + y)
+    plt.savefig(os.getcwd() + '/data/energyDual_' + str(x) + y + ".pdf")
     plt.close()
 
     binomial = []
-    for k in xrange(0,6):
-        m =5
-        binomial += [an.choose(m,k)*(0.5**k)*(0.5**(m-k))]
+    for k in xrange(0, 6):
+        m = 5
+        binomial += [an.choose(m, k) * (0.5 ** k) * (0.5 ** (m - k))]
 
-    saved = np.save('Safe_SSRDual'+str(n)+alph, analysis)
+    saved = np.save(os.getcwd() + '/data/savedSSRDual_' + str(x) + y, analysis)
 
-    #spectra = open(r'C:\Users\Maggie\Documents\GitHub\scf-mc\Saved_spectra3D_'+str(n), 'w')
-    #with spectra:
-    spectra = open('Saved_spectraDual_'+str(n), 'a')
-    spectra.write(str(analysis) +"\n")
+    spectra = open(os.getcwd() + '/data/savedSpectraDual_' + str(x), 'a')
+    spectra.write(str(analysis) + "\n")
     spectra.flush()
     spectra.close()
 
     ssr = an.SSR(analysis, binomial)
-    SSR = open('Saved_SSRDual_'+str(n), 'a')
+    SSR = open(os.getcwd() + '/data/savedSSRDual_' + str(x), 'a')
     SSR.write('-1\t' + str(ssr) + '\t' + '10000\n')
     SSR.flush()
     SSR.close()
 
-    S = np.loadtxt('Saved_SSRDual_'+str(n))
+    S = np.loadtxt(os.getcwd() + '/data/savedSSRDual_' + str(x))
 
-    if alph != 'a':
+    if y != 'a':
         set = []
         for line in S:
             set += [line[1]]
-
         set = map(float, set)
-        std = open('Standard_devDual_'+str(n),'a')
-        std.write(str(np.std(set))+'\n')
+        std = open(os.getcwd() + '/data/stdDevDual_' + str(x), 'a')
+        std.write(str(np.std(set)) + '\n')
 
     print binomial
 
-    t = np.array([0,1,2,3,4,5])
-    plt.plot(t.T,binomial,'r')
-    plt.plot(t.T,analysis,'b')
-    plt.savefig("binomialDual"+str(n)+alph+".pdf")
+    fig1 = plt.figure()
+    ax1 = fig.add_subplot(111)
+    t = np.array([0, 1, 2, 3, 4, 5])
+    plt.plot(t.T, binomial, 'r')
+    plt.plot(t.T, analysis, 'b')
+    plt.savefig(os.getcwd() + '/data/binomialDual_' + str(x) + y + ".pdf")

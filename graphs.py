@@ -1,4 +1,3 @@
-
 import numpy as np
 import random as rnd
 import matplotlib.pyplot as plt
@@ -6,9 +5,6 @@ import math
 import collections
 import itertools
 import ast
-
-
-
 
 def choose(n, k):
     """
@@ -27,18 +23,12 @@ def choose(n, k):
 
 def last_line(file):
     with open(file) as f:
-        #first = f.readline()     # Read the first line.
-        #f.seek(-2, 2)            # Jump to the second last byte.
-        #while f.read(1) != "\n": # Until EOL is found...
-        #    f.seek(-2, 1)        # ...jump back the read byte plus one more.
-        #last = f.readline()      # Read last line.
         nums = np.loadtxt(file)
         last = nums[-1]
         f.close()
         return last
 
 def get_avg(file):
-
     S = np.loadtxt(file, skiprows=1)
 
     set = []
@@ -76,15 +66,9 @@ def binomial_graph(file):
     plt.title(file)
     plt.show()
 
-
-
-
-
-
 if __name__ == '__main__':
     energy_5 = []
     for c in "abc":
-        #print [last_line("Energies-10000" + str(c))]
         energy_5 += [last_line('chi_1_5000steps\Energies3D_5000' + str(c))]
     energy_10 = []
     for d in "bc":
@@ -105,8 +89,6 @@ if __name__ == '__main__':
     for i in "abc":
         energy_250 += [last_line('chi_1_250000steps\EnergiesDual_250000' + str(i))]
 
-
-
     avg5 = sum(energy_5)/len(energy_5)
     avg10 = sum(energy_10)/len(energy_10)
     avg50 = sum(energy_50)/len(energy_50)
@@ -126,19 +108,9 @@ if __name__ == '__main__':
     y_vals = [avg5, avg10, avg50,avg100, avg150,avg200, avg250 ] # avg100, avg200, avg250, avg300]
     x_vals = [5000, 10000, 50000, 100000, 150000, 200000, 250000]# 100000, 200000, 250000, 300000]
     yerr = [std_5, std_10, std_50,std_100, std_150, std_200, std_250]# std_100, std_200, std_250, std_300]
-    #plt.errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
-    #plt.xlim(5000, 105000)
-    #axarr[0].title('Plot of Energies for each Number of Runs')
-    #plt.scatter(x_vals, energy_50, label='Energy for 50,000')
-    #plt.scatter(x_vals, energy_100, label='Energy for 100,000')
 
-    #legend = plt.legend(loc='upper right', shadow = True, fontsize = 'x-large')
-   # plt.figure(1)
     plt.show()
-    """ # plt.figure(2)
-    SSR10 = get_avg("Saved_SSRe")
-    SSR50 = get_avg("Saved_SSRf")"""
-    #SSR5 = get_avg("Saved_SSR3D_10050")
+
     SSR50 = get_avg("chi_1_50000steps\Saved_SSRDual_50000")
     SSR100 = get_avg("chi_1_100000steps\Saved_SSRDual_100000")
     SSR150 = get_avg("chi_1_150000steps\Saved_SSRDual_150000")
@@ -155,18 +127,10 @@ if __name__ == '__main__':
     Stand200 = StandDevD[-1]
     StandDevE = np.loadtxt("chi_1_250000steps\Standard_devDual_250000")
     Stand250 = StandDevE
-    #StandDevF = np.loadtxt("Standard_devF", skiprows=1)
-    #Stand300 = StandDevF[-1]
 
     x = [50000, 100000, 150000, 200000, 250000]
     y = [SSR50,SSR100, SSR150, SSR200, SSR250]
     err = [Stand50, Stand100, Stand150, Stand200, Stand250]
-    #plt.errorbar(x, y, yerr=err, marker = 'o')
-    #plt.xlim(0, 91000)
-    #plt.title('Plot of SSR for each Number of Runs')
-    #plt.xlabel('Number of Moves')
-
-
 
     f, axarr = plt.subplots(2, sharex=True)
     axarr[0].errorbar(x_vals, y_vals, yerr=yerr, marker = 'o')
@@ -181,8 +145,3 @@ if __name__ == '__main__':
     plt.show()
 
     binomial_graph("chi_1_200000steps\Saved_spectraDual_200000")
-
-
-
-
-

@@ -1,9 +1,6 @@
-__author__ = 'Maggie'
-
 import sys
 import numpy
 import matplotlib.pyplot as plt
-
 
 def choose(n, k):
     """
@@ -46,6 +43,5 @@ if __name__ == '__main__':
     plt.plot(t.T,binomial,'r')
     plt.plot(t.T,spectra,'b')
     plt.show()
-
 
     print ssr
