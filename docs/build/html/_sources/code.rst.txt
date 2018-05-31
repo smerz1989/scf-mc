@@ -1,5 +1,5 @@
 
-Documentation for the Code
+SCF-MC Initiation Module
 **************************
 
 .. automodule:: initiation

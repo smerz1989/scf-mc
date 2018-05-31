@@ -45,16 +45,13 @@
 <span class="sd">    ----------</span>
 <span class="sd">    lattice : int array</span>
 <span class="sd">        A numpy array containing the lattice positions of all current nanoparticles and chains</span>
-<span class="sd">    </span>
 <span class="sd">    numsteps : int</span>
 <span class="sd">        The number of steps of the requested self-avoiding walk</span>
-
 <span class="sd">    moiety : int</span>
-<span class="sd">         The moiety of the monomers used in the self-avoiding walk</span>
-
+<span class="sd">        The moiety of the monomers used in the self-avoiding walk</span>
 <span class="sd">    grafted_to : int tuple</span>
 <span class="sd">        The x,y,z coordinates of the desired starting point of the self-avoiding walk if left blank a random starting point is chosen.</span>
-
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    int array</span>
@@ -107,7 +104,28 @@
     <span class="nb">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">numsteps</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; long chain grown with &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">numrestarts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; restarts.&quot;</span>
     <span class="k">return</span> <span class="n">steps</span></div>
 
-<span class="k">def</span> <span class="nf">graft_chains</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">graft_points</span><span class="p">,</span> <span class="n">chainlength</span><span class="p">,</span> <span class="n">numchains</span><span class="p">,</span> <span class="n">moieties</span><span class="p">):</span>
+<div class="viewcode-block" id="graft_chains"><a class="viewcode-back" href="../code.html#initiation.graft_chains">[docs]</a><span class="k">def</span> <span class="nf">graft_chains</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">graft_points</span><span class="p">,</span> <span class="n">chainlength</span><span class="p">,</span> <span class="n">numchains</span><span class="p">,</span> <span class="n">moieties</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Places the given number of chains with the specified chainlength in self-avoiding walks starting at randomly chosen points chosen from the given graft points.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lattice : int array</span>
+<span class="sd">        The system lattice specifying the current position of all chains and nanoparticles currently residing in the system.</span>
+<span class="sd">    graft_points : int list</span>
+<span class="sd">        A list of the lattice (x,y,z) points of all possible graft points on the nanoparticle surface.</span>
+<span class="sd">    chainlength : int</span>
+<span class="sd">        The desired chainlength of the grafted chains.</span>
+<span class="sd">    numchains : int</span>
+<span class="sd">        The number of chains to graft on the nanoparticle surface.</span>
+<span class="sd">    moieties : int</span>
+<span class="sd">        The integer ID number of the moiety that composes the chain.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    chains</span>
+<span class="sd">        A list of all the chains grafted onto the surface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">chosen_points</span> <span class="o">=</span> <span class="n">rnd</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">graft_points</span><span class="p">,</span><span class="n">numchains</span><span class="p">)</span> <span class="k">if</span> <span class="n">numchains</span><span class="o">&lt;=</span><span class="n">graft_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">chains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">numchains</span><span class="p">,</span><span class="n">chainlength</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
@@ -123,40 +141,51 @@
         <span class="n">chains</span><span class="p">[</span><span class="n">idx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">chain</span>
         <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="k">return</span> <span class="n">chains</span>
+    <span class="k">return</span> <span class="n">chains</span></div>
 
 <span class="c1"># Finds the graft points on a lattice by filling in valid coordinates</span>
 <span class="c1">#   lattice = 3D lattice created using initialize_lattice</span>
 <span class="c1">#   radius =</span>
-<span class="k">def</span> <span class="nf">fill_cylinder</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="fill_cylinder"><a class="viewcode-back" href="../code.html#initiation.fill_cylinder">[docs]</a><span class="k">def</span> <span class="nf">fill_cylinder</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fills a faceted cylindrical nanoparticle in the center of the given system lattice with the specified radius.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        The desired radius of the nanoparticle cylinder in lattice units</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graft_points : int list</span>
+<span class="sd">        A list of the x,y,z coordinates of all possible grafting points on the newly created cylindrical nanoparticle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Finds the center of the 3D lattice by dividing each dimension by 2</span>
-	<span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
 
-	<span class="n">startoffset</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="n">endoffset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">startoffset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">endoffset</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="c1"># Goes through all values for a defined radius to find boundaries of the cylinder in the lattice</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">radius</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">radius</span><span class="p">):</span>
 
         <span class="c1"># startoffset and endoffset are the left and right offsets from the center of the cylinder</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="n">startoffset</span> <span class="o">+=</span> <span class="mi">1</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">endoffset</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">startoffset</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">endoffset</span> <span class="o">+=</span> <span class="mi">1</span>
 
-		<span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span> <span class="o">=</span> <span class="mi">1</span>
-		<span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">i</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span> <span class="o">=</span> <span class="mi">1</span>
-		<span class="n">lattice</span><span class="p">[(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">i</span><span class="p">),[(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="o">-</span><span class="mi">1</span><span class="p">),(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">)],:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-		<span class="n">lattice</span><span class="p">[(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="p">),[(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="o">-</span><span class="mi">1</span><span class="p">),(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">)],:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">i</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">lattice</span><span class="p">[(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">i</span><span class="p">),[(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="o">-</span><span class="mi">1</span><span class="p">),(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">)],:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">lattice</span><span class="p">[(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="p">),[(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="o">-</span><span class="mi">1</span><span class="p">),(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">)],:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
-	<span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span><span class="o">=-</span><span class="mi">1</span>
-	<span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span><span class="o">=-</span><span class="mi">1</span>
-	<span class="n">graft_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lattice</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span><span class="o">=-</span><span class="mi">1</span>
+    <span class="n">lattice</span><span class="p">[</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="p">,(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">radius</span><span class="o">+</span><span class="n">startoffset</span><span class="p">):(</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">radius</span><span class="o">-</span><span class="n">endoffset</span><span class="p">),:]</span><span class="o">=-</span><span class="mi">1</span>
+    <span class="n">graft_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lattice</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
 
-	<span class="nb">print</span> <span class="s2">&quot;The graft points look like this...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">graft_points</span><span class="p">)</span>
-	<span class="n">lattice</span><span class="p">[</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="mi">0</span>
-	<span class="k">return</span> <span class="n">graft_points</span>
+    <span class="nb">print</span> <span class="s2">&quot;The graft points look like this...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">graft_points</span><span class="p">)</span>
+    <span class="n">lattice</span><span class="p">[</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">graft_points</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">return</span> <span class="n">graft_points</span></div>
 
 <span class="c1"># Preallocates the lattice and chains, and defines the graft points</span>
 <span class="c1">#   shape = list containing 3 integers to define the dimensions of the 3D lattice</span>
@@ -164,29 +193,31 @@
 <span class="c1">#   chainlength = total chain length of A and B</span>
 <span class="c1">#   moieties = list of 2 integers to identify A and B monomers</span>
 <span class="c1">#   radius =</span>
-<div class="viewcode-block" id="initialize_lattice"><a class="viewcode-back" href="../code.html#initiation.initialize_lattice">[docs]</a><span class="k">def</span> <span class="nf">initialize_lattice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">numchains</span><span class="p">,</span> <span class="n">chainlengths</span><span class="p">,</span> <span class="n">moieties</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="initialize_lattice"><a class="viewcode-back" href="../code.html#initiation.initialize_lattice">[docs]</a><span class="k">def</span> <span class="nf">initialize_lattice</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">numchains</span><span class="p">,</span> <span class="n">chainlength</span><span class="p">,</span> <span class="n">moieties</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initializes the system lattice with specified number of chains, chainlengths, and chain moieties, with a faceted nanoparticle of specified radius.</span>
-
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    shape : int tuple</span>
 <span class="sd">        A tuple of ints containing the three dimensions of the system x,y,z in lattice units</span>
-
 <span class="sd">    numchains : int</span>
 <span class="sd">        The number of chains to be placed in the system.</span>
-
 <span class="sd">    chainlegnths : int tuple</span>
 <span class="sd">        A tuple of ints containing the chain length of each of the two chain types in the system.</span>
-
 <span class="sd">    moieties : int tuple</span>
 <span class="sd">        A tuple containing the integer identifier of the moieties to be used in the simulation.</span>
-
 <span class="sd">    radius : int</span>
 <span class="sd">        An integer specifying the radius of the faceted nanoparticle in lattice units.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (lattice, graft_points, chains)</span>
+<span class="sd">        Returns the given lattice filled with the chains and nanoparticles.  </span>
+<span class="sd">        Additionally returns all graft points on the nanoparticle surface in the form of a list of points (x,y,z).  Finally returns a list of all the chains grafted onto the nanoaprticle.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># chainlengthA is 75% of chainlength, and chainlengthB is the remainder</span>
-    <span class="n">chainlengthA</span> <span class="o">=</span> <span class="n">chainlengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">chainlengthB</span> <span class="o">=</span> <span class="n">chainlengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">chainlengthA</span> <span class="o">=</span> <span class="n">chainlength</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="n">chainlengthB</span> <span class="o">=</span> <span class="n">chainlength</span> <span class="o">-</span> <span class="n">chainlengthA</span>
     <span class="c1">## test: chainlengthB = int(chainlength/2)</span>
     <span class="c1">## test: chainlengthA = chainlength - chainlengthB</span>
 
@@ -208,10 +239,6 @@
         <span class="n">chains_B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">chains_Bold</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">addition</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">chains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">chains_A</span><span class="p">,</span> <span class="n">chains_B</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">graft_points</span><span class="p">,</span> <span class="n">chains</span><span class="p">)</span></div>
-
-
-
-
 </pre></div>
 
           </div>

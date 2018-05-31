@@ -9,8 +9,8 @@ Welcome to SCF-MC's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-code
+   
+   code
 
 
 Indices and tables

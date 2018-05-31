@@ -1,7 +1,29 @@
+"""
+Contains all functions necessary to initialize the chain and nanoparticle positions inside the lattice.
+"""
+
 import numpy as np
 import random as rnd
 
 def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
+    """Finds a self avoiding walk on the given lattice with an optional specified starting point and sets the corresponding points in the lattice to the given moiety.
+
+    Parameters
+    ----------
+    lattice : int array
+        A numpy array containing the lattice positions of all current nanoparticles and chains
+    numsteps : int
+        The number of steps of the requested self-avoiding walk
+    moiety : int
+        The moiety of the monomers used in the self-avoiding walk
+    grafted_to : int tuple
+        The x,y,z coordinates of the desired starting point of the self-avoiding walk if left blank a random starting point is chosen.
+    
+    Returns
+    -------
+    int array
+        Steps in the found self-avoiding walk, if no self-avoiding walk is found then -1 is returned.
+    """
     (L, M, D) = lattice.shape
     nns_odd = np.array([(-1, -1, 0), (0, -1, 0), (1, -1, 0), (-1, 0, 0), (1, 0, 0), (0, 1, 0), (0,0,-1),(0,0,1)])
     nns_even = np.array([(0, -1, 0), (-1, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (-1, 1, 0),(0,0,-1),(0,0,1)])
@@ -50,6 +72,27 @@ def hex_Saw(lattice, numsteps, moiety, grafted_to=None):
     return steps
 
 def graft_chains(lattice, graft_points, chainlength, numchains, moieties):
+    """Places the given number of chains with the specified chainlength in self-avoiding walks starting at randomly chosen points chosen from the given graft points.
+
+    Parameters
+    ----------
+    lattice : int array
+        The system lattice specifying the current position of all chains and nanoparticles currently residing in the system.
+    graft_points : int list
+        A list of the lattice (x,y,z) points of all possible graft points on the nanoparticle surface.
+    chainlength : int
+        The desired chainlength of the grafted chains.
+    numchains : int
+        The number of chains to graft on the nanoparticle surface.
+    moieties : int
+        The integer ID number of the moiety that composes the chain.
+
+    Returns
+    -------
+    chains
+        A list of all the chains grafted onto the surface.
+    """
+
     chosen_points = rnd.sample(graft_points,numchains) if numchains<=graft_points.shape[0] else -1
     chains = np.empty((numchains,chainlength,3),dtype=int)
     idx = 0
@@ -71,34 +114,45 @@ def graft_chains(lattice, graft_points, chainlength, numchains, moieties):
 #   lattice = 3D lattice created using initialize_lattice
 #   radius =
 def fill_cylinder(lattice, radius):
+    """Fills a faceted cylindrical nanoparticle in the center of the given system lattice with the specified radius.
 
+    Parameters
+    ----------
+    radius : float
+        The desired radius of the nanoparticle cylinder in lattice units
+
+    Returns
+    -------
+    graft_points : int list
+        A list of the x,y,z coordinates of all possible grafting points on the newly created cylindrical nanoparticle.
+    """
     # Finds the center of the 3D lattice by dividing each dimension by 2
-	center = [lattice.shape[0]/2, lattice.shape[1]/2, lattice.shape[2]/2]
+    center = [lattice.shape[0]/2, lattice.shape[1]/2, lattice.shape[2]/2]
 
-	startoffset = 0
-	endoffset = 0
+    startoffset = 0
+    endoffset = 0
 
     # Goes through all values for a defined radius to find boundaries of the cylinder in the lattice
-	for i in xrange(radius):
+    for i in xrange(radius):
 
         # startoffset and endoffset are the left and right offsets from the center of the cylinder
-		if (i + center[0]) % 2 == 0:
-			startoffset += 1
-		else:
-			endoffset += 1
+        if (i + center[0]) % 2 == 0:
+            startoffset += 1
+        else:
+            endoffset += 1
 
-		lattice[center[0]+i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
-		lattice[center[0]-i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
-		lattice[(center[0]-i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
-		lattice[(center[0]+i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
+        lattice[center[0]+i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
+        lattice[center[0]-i,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:] = 1
+        lattice[(center[0]-i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
+        lattice[(center[0]+i),[(center[1]-radius+startoffset-1),(center[1]+radius-endoffset)],:] = -1
 
-	lattice[center[0]+radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
-	lattice[center[0]-radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
-	graft_points = np.transpose(np.vstack(np.where(lattice == -1)))
+    lattice[center[0]+radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
+    lattice[center[0]-radius,(center[1]-radius+startoffset):(center[1]+radius-endoffset),:]=-1
+    graft_points = np.transpose(np.vstack(np.where(lattice == -1)))
 
-	print "The graft points look like this...\n"+str(graft_points)
-	lattice[graft_points[:,0],graft_points[:,1],graft_points[:,2]]=0
-	return graft_points
+    print "The graft points look like this...\n"+str(graft_points)
+    lattice[graft_points[:,0],graft_points[:,1],graft_points[:,2]]=0
+    return graft_points
 
 # Preallocates the lattice and chains, and defines the graft points
 #   shape = list containing 3 integers to define the dimensions of the 3D lattice
@@ -107,7 +161,27 @@ def fill_cylinder(lattice, radius):
 #   moieties = list of 2 integers to identify A and B monomers
 #   radius =
 def initialize_lattice(shape, numchains, chainlength, moieties, radius):
+    """Initializes the system lattice with specified number of chains, chainlengths, and chain moieties, with a faceted nanoparticle of specified radius.
+    
+    Parameters
+    ----------
+    shape : int tuple
+        A tuple of ints containing the three dimensions of the system x,y,z in lattice units
+    numchains : int
+        The number of chains to be placed in the system.
+    chainlegnths : int tuple
+        A tuple of ints containing the chain length of each of the two chain types in the system.
+    moieties : int tuple
+        A tuple containing the integer identifier of the moieties to be used in the simulation.
+    radius : int
+        An integer specifying the radius of the faceted nanoparticle in lattice units.
 
+    Returns
+    -------
+    (lattice, graft_points, chains)
+        Returns the given lattice filled with the chains and nanoparticles.  
+        Additionally returns all graft points on the nanoparticle surface in the form of a list of points (x,y,z).  Finally returns a list of all the chains grafted onto the nanoaprticle.
+    """
     # chainlengthA is 75% of chainlength, and chainlengthB is the remainder
     chainlengthA = chainlength * 3 / 4
     chainlengthB = chainlength - chainlengthA
